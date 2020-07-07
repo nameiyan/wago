@@ -1,0 +1,266 @@
+/* 公用样式 */
+
+/* 清除浮动 */
+.clearfix::after {
+    content: ".";
+    clear: both;
+    display: block;
+    overflow: hidden;
+    font-size: 0;
+    height: 0;
+}
+
+/* 浮动 */
+.f-l {
+    float: left;
+}
+
+.f-r {
+    float: right;
+}
+
+/* 字体颜色 */
+.c-fff {
+    color: #fff;
+}
+
+/* 边距 */
+.m-l-20 {
+    margin-left: 20px;
+}
+
+.m-t-20 {
+    margin-top: 20px;
+}
+
+/* 链接样式 */
+.link:hover {
+    cursor: pointer;
+    color: #8190f9;
+}
+
+/* label样式 */
+.hj-label {
+    font-size: 14px;
+}
+
+.text-c {
+    text-align: center;
+}
+
+.hj-w120 {
+    width: 120px;
+}
+
+.hj-w192 {
+    width: 262px;
+}
+
+.hj-w120 {
+    width: 120px;
+}
+
+/*
+公共样式
+*/
+
+.w10{
+    width: 100%;
+}
+.w5{
+    width: 50%;
+}
+.w4{
+    width: 40%;
+}
+.w45{
+    width: 45%;
+}
+.img{
+    width: 100%;
+    height: 100%;
+}
+
+
+.flex{
+    display: flex;
+}
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-start {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.m-b-10{
+   margin-bottom: 10px;
+}
+.m-b-20{
+    margin-bottom: 20px;
+}
+.m-t-10{
+    margin-top: 10px;
+}
+.m-t-20{
+    margin-top: 20px;
+}
+.img{
+    width: 100%;
+    height: 100%;
+}
+.m-r-10{
+    margin-right: 10px;
+}
+.m-r-20{
+    margin-right: 20px;
+}
+.m-l-10{
+    margin-left: 10px;
+}
+
+/*订单头部查询头样式*/
+.banner2{
+    margin: 20px 0;
+}
+.pageHead{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.inputW{
+    width: 180px;
+}
+.greenBtn{
+    background: #22c0bf;
+    border-color: #22c0bf;
+}
+.pageBox>div{
+    margin-bottom: 5px;
+}
+
+/*居中的footer按钮组*/
+.box1-btns{
+    display: flex;
+    justify-content: center;
+}
+/*红色必填色*/
+.red{
+    color: #f44;
+
+}
+.tip{
+    color: rgba(0,0,0,0.4);
+    font-size: 12px;
+}
+/*团购新增样式wrr*/
+.img-100{
+    width: 100px;
+    height: 100px;
+}
+.vertical {
+    color: darkolivegreen;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.look-btn {
+    cursor: pointer;
+}
+.look-btn:hover {
+    text-decoration: underline;
+    color: #409eff;
+}
+.blue-btn{
+    background-color: #169bd5;
+    border-color: #169bd5;
+}
+.green-btn{
+    background-color: #009999;
+    border-color: #009999;
+}
+.red-btn{
+    background-color: #ff0000;
+    border-color: #ff0000;
+
+}
+.c-g {
+    color: green;
+}
+
+.c-r {
+    color: red;
+}
+.padding-20{
+    padding: 20px;
+}
+.w25{
+    width: 25%;
+}
+.box{
+    box-sizing: border-box;
+}
+.inputLong{
+    width: 230px;
+}
+.input-70{
+    width: 70px;
+}
+.p-r-50{
+    padding-right: 50px;
+}
+.m-b-40{
+    margin-bottom: 40px;
+}
+/*wrr*/
+
+/*列表里的图片*/
+.list-img{
+    width: 200px;
+    height: 106px;
+    margin: 0 auto;
+    display: block;
+}
+.list-img-shop{
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    display: block;
+}
+.list-img-small{
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.tableT{
+        width: 100%;
+        margin: 0 auto;
+        height: 55px;
+        line-height: 55px;
+        background: #eee;
+    }
+
+    [v-cloak] {
+  display: none;
+}

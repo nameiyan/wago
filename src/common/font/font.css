@@ -1,0 +1,16 @@
+@font-face { 
+    font-family: 'myfont'; 
+    /* //重命名字体名 */
+    src: url-loader('PINGFANG BOLD.TTF'); 
+    /* //引入字体 */
+    font-weight: normal; 
+    font-style: normal; 
+   }
+@font-face { 
+    font-family: 'myfont-light'; 
+    /* //重命名字体名 */
+    src: url-loader('PINGFANG LIGHT.TTF'); 
+    /* //引入字体 */
+    font-weight: normal; 
+    font-style: normal; 
+   }

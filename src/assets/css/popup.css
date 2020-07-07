@@ -1,0 +1,76 @@
+/* 
+
+        弹出窗口样式
+
+ */
+
+.product{
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  font-family: PingFang SC;
+  color: #444;
+  background: rgba(0, 0, 0, .5);
+  z-index: 999;
+}
+.dity-box{
+  width: 700px;
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  bottom: 10px;
+  background-color: #fff;
+  margin-left: -350px;
+  z-index: 9999;
+}
+.goods-info{
+  width: 100%;
+  text-align: center;
+  line-height: 28px;
+}
+.goods-info>h4{
+  line-height: 36px;
+  border-radius: 4px;
+  width: 300px;
+  margin: 10px auto;
+  background-color: #313030;
+  font-size: 18px;
+  font-weight: 400;
+  color: #fff;
+}
+.close-btn{
+  position: absolute;
+  top: 10px;
+  right: -50px;
+  font-size: 40px;
+  color: #fff;
+  border: 1px solid #fff;
+}
+.msg-box{
+  width: 80%;
+  margin: 0 auto;
+  height: 28px;
+}
+.goods-d-list{
+  width: 100%;
+  overflow-y: auto;
+}
+.goods-d-list>li{
+  padding: 10px;
+  line-height: 30px;
+}
+.goods-d-list>li>div:nth-child(1){
+  width: 180px;
+  float: left;
+  text-align: right;
+}
+.goods-d-list>li>div:nth-child(2){
+  width: 420px;
+  float: left;
+  text-align: left;
+  text-indent: 28px;
+  color: #555;
+  font-size: 14px;
+}

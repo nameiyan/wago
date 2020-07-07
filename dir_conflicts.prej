@@ -1,0 +1,16 @@
+Trying to change property 'svn:ignore' from 'node_modules
+' to 'node_modules
+',
+but the property has been locally changed from 'node_modules
+' to '.idea
+node_modules
+'.
+Trying to change property 'svn:ignore' from 'node_modules
+' to '*.idea
+.idea
+node_modules
+',
+but the property has been locally changed from 'node_modules
+' to '.idea
+node_modules
+'.
