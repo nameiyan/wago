@@ -27,26 +27,42 @@
                    <el-button type="primary" plain @click="addArticle()" class="toadd">添加文章</el-button>
                 </div>
             </div>
+
             <el-table
                 :data="tableData"
                 border
                 style="width: 100%">
+
                 <el-table-column
                     prop="id"
                     label="id"
-                    width="80">
+                    width="80"
+                    align="center">
                 </el-table-column>
+
                 <el-table-column
-                    prop="name"
+                    prop="title"
                     label="文章名"
-                    width="150">
+                    align="center">
                 </el-table-column>
+
                 <el-table-column
-                    prop="author"
-                    label="作者"
-                    width="80">
+                    prop="subtitle"
+                    label="描述"
+                    align="center">
                 </el-table-column>
+
                 <el-table-column
+                    prop="url"
+                    label="图片"
+                    align="center">
+                    <template slot-scope="scope">
+                        <img v-if="scope.row.url != ''" :src="scope.row.url" alt style="height:100px;width:100px" />
+                        <img v-else src="../../assets/images/undefined.png" alt style="height:100px;width:100px" />
+                    </template>
+                </el-table-column>
+
+                <!-- <el-table-column
                     prop="category_id"
                     label="分类"
                     width="100">
@@ -55,6 +71,7 @@
                          (scope.row.category_id == '4' ? '说明文' : (scope.row.category_id == '5' ? '应用文' : '其他'))))}}
                     </template>
                 </el-table-column>
+
                 <el-table-column
                     prop="views"
                     label="浏览量"
@@ -67,8 +84,8 @@
                 <el-table-column
                     prop="update_time_change"
                     label="修改时间">
-                </el-table-column>
-                <el-table-column label="操作">
+                </el-table-column> -->
+                <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button
                         size="mini"
@@ -85,22 +102,20 @@
             </el-table>
             <!-- 分页 -->
             <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="currentPage"
-                :page-sizes="[10, 20, 30, 40]"
-                :page-size="10"
-                layout="total, sizes, prev, pager, next, jumper"
+                @size-change="changeSize"
+                @current-change="changePage"
+                :page-size="nowpageSize"
+                 layout="total, prev, pager, next, jumper"
                 :total="total">
             </el-pagination>
-             <el-dialog
+             <!-- <el-dialog
                 title=""
                 ref='wany'
                 :visible.sync="checkarticlevisible"
                 width="70%"
                 center>
                 <CheckArticle :closeTable='closeTable' :articletable="articletable" @close="handleCheckclose"></CheckArticle>
-            </el-dialog>
+            </el-dialog> -->
        </div>
     </div>
 </template>
@@ -115,9 +130,8 @@ import CheckArticle from './CheckArticle.vue'
         data(){
             return{
                 tableData: [],
-                nowpage:1,
-                nowpageSize:10,
-                currentPage:1,//分页的当前页
+                nowpage: 1,
+                nowpageSize: 10,
                 articletableData:'',
                 total:null,
                 articletable:[],   //查看文章的数据
@@ -129,76 +143,41 @@ import CheckArticle from './CheckArticle.vue'
             // this.adminName = sessionStorage.getItem('admin_name')
             this.requireArticle()
         },
-         methods: {
+        methods: {
             //  跳转到添加文章的页面
             addArticle(){
                 this.$router.push({name: 'AddArticle'});
             },
             //  查询用电安全的数据(文章列表)
             requireArticle(){
+                var that = this;
                 var param = {
-                     currentPage:this.nowpage,
-                     pageSize:this.nowpageSize,
-                     queryString: this.unclearSearch
+                    page:that.nowpage,
+                    size:that.nowpageSize,
+                    string: that.unclearSearch,
+                    typeid:''
                 };
-                console.log('param',param)
-                var vm = this;
-                this.$axios.post('/safety/select',param).then(function (response) {
-                    var articlelist = response.data.data.list;
-                    vm.tableData = articlelist;
-                    vm.total = response.data.data.total;
-                    console.log('查询用电安全的数据',response.data.data.list);
+
+                // .post('/safety/findPage',param)
+                this.$axios({
+                   url:'/safety/findPage',
+                   data:param,
+                   method:'post'
+                }).then(function (res) {
+                    that.total = res.data.total;
+                    that.tableData = res.data.rows;
+                    if(res.data.total < 1){
+                        that.$message.error('暂无数据！')
+                    }
+                    
                 })
                 .catch(function (error) {
 
                  });
              },
-            //  时间的格式转换
-            createGoodsTime(value){
-                // console.log('value',value)
-                var date = new Date(value);
-                var Y = date.getFullYear() + '-';
-                var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-                var D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate());
-                var time = Y+M+D;
-                return time;
-            },
+           
             
-            //  改变排序
-            changeSort(column){
-                // console.log(column);
- 
-                //获取字段名称和排序类型
-                var fieldName = column.prop;
-                var sortingType = column.order;
-        
-                //如果字段名称为“创建时间”，将“创建时间”转换为时间戳，才能进行大小比较
-                if(fieldName=="createTime"){
-                    this.articletableData.map(item => {
-                            item.createTime = this.$moment(item.createTime).valueOf();
-                    });
-                }
-                    
-                    
-                //按照降序排序
-                if(sortingType == "descending"){
-                    this.articletableData = this.articletableData.sort((a, b) => b[fieldName] - a[fieldName]);
-                }
-                //按照升序排序
-                else{
-                    this.articletableData = this.articletableData.sort((a, b) => a[fieldName] - b[fieldName]);
-                }
-        
-                //如果字段名称为“创建时间”，将时间戳格式的“创建时间”再转换为时间格式
-                if(fieldName=="createTime"){
-                    this.articletableData.map(item => {
-                        item.createTime = this.$moment(item.createTime).format(
-                            "YYYY-MM-DD"
-                        );
-                    });
-                }
-                // console.log(this.articletableData);
-            },
+            
             // 查看文章的弹框展示
             handleCheck(index,row) {
                 this.checkarticlevisible = true;
@@ -219,10 +198,10 @@ import CheckArticle from './CheckArticle.vue'
                 this.$store.commit('articleEditData',row)     //存储需要编辑的数据  （方法名称，唯一参数）
                 this.$router.replace('/home/article/ArticleEdit');
             },
-            // 删除文章
+            // 用电安全(删除文章)
             handleDelete(index, row) {
-                var vm = this
-                var deldata = '/safety/delete';
+                console.log('row',row)
+                var that = this
                 var id = {
                     id:row.id
                 }
@@ -234,13 +213,13 @@ import CheckArticle from './CheckArticle.vue'
                         this.$axios({
                              url:'/safety/delete',
                              data:id,
-                             method:'post',
-                         }).then(function (response) {
-                            console.log('response',response.data.flag)
-                            if(response.data.flag){
+                             method:'post'
+                         }).then(function (res) {
+                            console.log('resssssssssssssssssss',res)
+                            if(res.data.flag){
                                 // 删除后再次查询商品
-                                vm.requireArticle()
-                                vm.$message({
+                                that.requireArticle()
+                                that.$message({
                                     type: 'success',
                                     message: '删除成功!'
                                 });
@@ -263,15 +242,19 @@ import CheckArticle from './CheckArticle.vue'
                 this.$router.push({name: 'Login'});
                 // console.log("输出")
             },
-            // 分页
-             handleSizeChange(val) {
-                // console.log(`每页 ${val} 条`);
+             // 分页的页数
+            changePage(page) {
+                 console.log('page',page)
+                this.nowpage = page;
+                this.requireArticle();
             },
-            handleCurrentChange(val) {
-                // console.log(`当前页: ${val}`);
-                 this.nowpage = val;
-                 this.requireArticle()
-            }
+            // 分页的每页有多少条数据
+            changeSize(pagesize) {
+                
+                this.nowpageSize = pagesize;
+                this.nowpage = 1;
+                this.requireArticle();
+            },
             // 分页结束
         }
     }
@@ -324,7 +307,7 @@ import CheckArticle from './CheckArticle.vue'
 
     }
     .toadd{
-        height: 50px;
+        height: 40px;
         width: 120px;
         margin: 20px 60px 0 0;
     }

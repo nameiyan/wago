@@ -21,14 +21,14 @@
                             <el-submenu index="1">
                                 <template slot="title"><span>销售名片管理</span></template>
                                 <el-menu-item index="1-1"  @click="goTo('/home/sellingCard')">
-                                    <i class="el-icon-s-custom"></i>销售名片
+                                    <i class="el-icon-s-custom"></i>销售名片查看
                                 </el-menu-item>
-                                <!-- <el-menu-item index="1-2">
-                                    <img src="../assets/images/roled.png" alt="" style="width:21px;height：19px">
-                                    用户管理
-                                </el-menu-item> -->
+                                <el-menu-item index="1-2" @click="goTo('/home/sellingCard/addsellingCard')">
+                                    <i class="el-icon-s-custom"></i>
+                                    添加销售名片
+                                </el-menu-item>
                             </el-submenu>
-                        <!-- 商品管理 -->
+                        <!-- 商品管理 
                             <el-submenu index="2">
                                 <template slot="title"><span>商品管理</span></template>
                                 <el-menu-item index="2-1"  @click="goTo('/home/GoodsManage')">
@@ -37,15 +37,18 @@
                                 <el-menu-item index="2-2" @click="goTo('/home/AddGoods')">
                                     <i class="el-icon-shopping-cart-full"></i>添加商品
                                 </el-menu-item>
-                            </el-submenu>
+                            </el-submenu>-->
                          <!-- 文章管理 -->
-                             <el-submenu index="3">
+                            <el-submenu index="3">
                                 <template slot="title"><span>用电安全</span></template>
                                 <el-menu-item index="3-1" @click="goTo('/home/Article')">
                                     <i class="el-icon-reading"></i>用电安全
                                 </el-menu-item>
+                                <el-menu-item index="3-2" @click="goTo('/home/Article/uploadVideo')">
+                                    <i class="el-icon-reading"></i>上传视频
+                                </el-menu-item>
                             </el-submenu>
-                        <!-- 订单管理 -->
+                        <!-- 订单管理 
                             <el-submenu index="4">
                                 <template slot="title"><span>订单管理</span></template>
                                 <el-menu-item index="4-1" @click="goTo('/home/Ordering')">
@@ -54,8 +57,8 @@
                                 <el-menu-item index="4-2" @click="goTo('/home/Ordering/AddOrder')">
                                     <i class="el-icon-reading"></i>添加订单
                                 </el-menu-item>
-                            </el-submenu>
-                        <!-- 留言管理 -->
+                            </el-submenu>-->
+                        <!-- 留言管理 
                             <el-submenu index="5">
                                 <template slot="title"><span>意见反馈</span></template>
                                 <el-menu-item index="5-1" @click="goTo('/home/MessageManage')">
@@ -64,9 +67,9 @@
                                 <el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
                                     <i class="el-icon-reading"></i>添加意见反馈
                                 </el-menu-item>
-                            </el-submenu>
-                         <!--     积分管理   pointManagement   -->
-                            <el-submenu index="6">
+                            </el-submenu>-->
+                         <!--     积分管理   pointManagement    -->
+                            <!-- <el-submenu index="6">
                                 <template slot="title"><span>积分管理</span></template>
                                 <el-menu-item index="6-1" @click="goTo('/home/pointManagement')">
                                     <i class="el-icon-reading"></i>积分查询
@@ -74,7 +77,7 @@
                                 <el-menu-item index="6-2" @click="goTo('/home/changePoint')">
                                     <i class="el-icon-reading"></i>积分修改
                                 </el-menu-item>
-                            </el-submenu>
+                            </el-submenu> -->
                         <!-- 权限管理 -->
                             <!-- <el-submenu index="1">
                                 <template slot="title"><span>权限管理</span></template>

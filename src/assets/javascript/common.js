@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {post, fetch, patch, put} from '@/http/http.js'
-// axios.defaults.baseURL = "http://sss.hemajia.net/wago"
-axios.defaults.baseURL = "http://192.168.3.11:8082/wago"
+// axios.defaults.baseURL = "http://192.168.3.40:8080/wago"
+axios.defaults.baseURL = "https://fly.hemajia.net/wago"
 
 export default {
     install(Vue, options) {
@@ -9,7 +9,7 @@ export default {
             // Vue.prototype.url = "http://192.168.1.135:8080/tuangou/",          //liang
             // Vue.prototype.url = "http://39.105.187.204:8080/tuangou/",          //正服务器路径
             // Vue.prototype.url = "http://192.168.1.100:82",          //测试服务器路径
-            Vue.prototype.url = "http://192.168.3.11:8082/wago",     //http://fly.hemajia.net   服务器的路径
+            // Vue.prototype.url = "http://fly.hemajia.net/wago",     //http://fly.hemajia.net   服务器的路径
             Vue.prototype.$http = {post, fetch, patch, put},                   //axiox封装请求函数
             Vue.prototype.$axios = axios;
             Vue.prototype.$ali = {                                             //阿里云OSS key参数

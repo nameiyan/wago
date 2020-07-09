@@ -44,6 +44,15 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
+                // 添加销售名片   addsellingCard
+                {   
+                    path: '/home/sellingCard/addsellingCard',
+                    name: 'addsellingCard',
+                    component: resolve => require(['@/pages/sellingCard/addsellingCard'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
                 {   // 权限管理
                     path: '/home/limitList',
                     name: 'limitList',
@@ -79,15 +88,16 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
+
                 // 文章查看CheckArticle
-                // {
-                //     path: '/home/article/CheckArticle',
-                //     name: 'CheckArticle',
-                //     component: resolve => require(['@/pages/article/CheckArticle'], resolve),
-                //     meta: {
-                //         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                //      }
-                // },
+                {
+                    path: '/home/article/CheckArticle',
+                    name: 'CheckArticle',
+                    component: resolve => require(['@/pages/article/CheckArticle'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
                 // 文章编辑
                 {
                     path: '/home/article/ArticleEdit',
