@@ -3,25 +3,52 @@
 
 
         <div class="manege-content">
+
+
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="题目" prop="name">
-                    <el-input v-model="ruleForm.name"></el-input>
+                <el-form-item label="题目" prop="title">
+                    <el-input v-model="ruleForm.title"></el-input>
                 </el-form-item>
-                <el-form-item label="作者" prop="author">
-                    <el-input v-model="ruleForm.author"></el-input>
+                <el-form-item label="作者" prop="subtitle">
+                    <el-input v-model="ruleForm.subtitle"></el-input>
                 </el-form-item>
-                <el-form-item label="文章类型">
-                        <el-select v-model="value" clearable placeholder="请选择文章类型">
+                <el-form-item label="文章类型" prop="typeid">
+                        <el-select v-model="ruleForm.value" clearable placeholder="请选择文章类型">
                         <el-option
                             v-for="item in options"
                             :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                            :label="item.typeName"
+                            :value="item.typeid">
                         </el-option>
                     </el-select>
                 </el-form-item>
+                
+                <el-form-item label="图片" prop="url">
+
+                    <div v-if="ruleForm.url.length > 0">
+                        <img class="img" :src="ruleForm.url" alt="" style="height:100px;width:100px">
+                    </div>
+
+                    <div v-if='imgsback.length>0' class="flex">
+                        <div class="img-box" v-for="(item, i) in imgsback" :key='i' >
+                            <img class="img" :src="item" alt=""> <span @click="delimgback(i)"><i class="el-icon-delete"></i></span>
+                        </div>
+                    </div>
+                    <div class="img-file" v-if='imgsback.length < sizeback'>
+                    <input type="file" id='files' @change='fileChangeback($event)'>
+                            <label for="files"></label>
+                    </div>
+                </el-form-item>
+                
+                <el-form-item label="权重" prop="quan">
+                   <el-input-number v-model="ruleForm.quan" :min="1" :max="10000000" size="mini"></el-input-number>
+                </el-form-item>
             </el-form>
            
+
+
+
+
             <div style="display:flex;justify-content:flex-end;padding:10px 0">
                 <input type='file' @change="update" ref='contentUpload' id='avatar-uploader' />
             </div>
@@ -32,6 +59,14 @@
                 <img id='contentPic'  :src='imgUrl'/>
             </quill-editor>
             <el-button type="primary" @click="searchArticleName()">提交</el-button>
+
+
+
+
+            <!-- <image  src='http://wagogzh.oss-cn-beijing.aliyuncs.com/QRCode/QRCode/38079c7d-6445-4769-80f0-1a7452d35d17.txt'  >
+
+            </image> -->
+          
         </div>
     </div>
 </template>
@@ -49,48 +84,42 @@ import 'quill/dist/quill.bubble.css'
         name: "ArticleEdit",
         data(){
            return  {
+                dataList:'',    //从文章页面传递过来的数据  对应条
+            //    图片上传
+                imgsback: [],      // 图片预览地址
+                imgfilesback: [],  // 图片原文件，上传到后台的数据
+                sizeback: 1 ,      // 限制上传数量
+                imgName:'',        //图片的url
+               
                 content: '',
                 imgUrl:'',
                 editorOption: {},
                 quillOption: '',
                 quillConfig:{},
                 ruleForm: {
-                    id:this.$store.state.articleEditData.id,
-                    name: this.$store.state.articleEditData.name,
-                    author: this.$store.state.articleEditData.author,
-                    create_time: this.$store.state.articleEditData.create_time,
+                    title: '',
+                    subtitle: '',
+                    url:'',
+                    value: '',    //文章分类的id
+                    quan: 1,//计数器
                 },
                 rules: {
-                    name: [
-                        { required: true, message: '请输入题目', trigger: 'blur' },
+                    title: [
+                        { required: true, message: '请输入题目', trigger: 'blur' }
                     ],
-                    author: [
-                        { required: true, message: '请填写作者', trigger: 'blur' }
-                    ]
+                    subtitle: [
+                        { required: true, message: '请填写副标题', trigger: 'blur' }
+                    ],
+                    typeid:[
+                        { required: true, message: '请上传选择分类', trigger: 'blur' }
+                    ],
+                    url:[
+                        { required: true, message: '请上传图片', trigger: 'blur' }
+                    ],
                 },
-                myfilename:'',//通过文章内容获取的文章的名字
-                options: [{
-                    value: '1',
-                    label: '记叙文'
-                    }, {
-                    value: '2',
-                    label: '抒情文'
-                    }, {
-                    value: '3',
-                    label: '议论文'
-                    }, {
-                    value: '4',
-                    label: '说明文'
-                    }, {
-                    value: '5',
-                    label: '应用文'
-                    }, {
-                    value: '6',
-                    label: '其他'
-                    }],
-                category_id:this.$store.state.articleEditData.category_id == '1' ? '记叙文' : (this.$store.state.articleEditData.category_id == '2' ? '抒情文' : (this.$store.state.articleEditData.category_id == '3' ? '议论文' : 
-                         (this.$store.state.articleEditData.category_id == '4' ? '说明文' : (this.$store.state.articleEditData.category_id == '5' ? '应用文' : '其他')))),
-                value:this.$store.state.articleEditData.category_id,
+                myfilename:'',
+                options: [],
+               
            }
         },
         created(){
@@ -151,74 +180,154 @@ import 'quill/dist/quill.bubble.css'
             
         },
         mounted(){
-            // console.log('this.$store.state.articleEditData.id',this.$store.state.articleEditData.id)
+            this.getAllcategorize()
         },
         methods: {
-            // 通过文件名称获取文章内容
-            searchArticleContent(){
-                var mydata = { 
-                    id: this.$store.state.articleEditData.id
+             // 查询全部分类
+            getAllcategorize(){
+                var that = this
+                var mydata = {
+                    page:1,
+                    size:15
                 }
-                var vm = this;
                 this.$axios({
-                    url: '/safety/selectById',
+                    url: '/type/select',
                     method: 'post',
-                    data: mydata
-                }).then((re)=>{
-                    console.log('返回数据1111', re.data)
-                    if(re.data.flag){
-                        
-                    }
-                    // vm.content = JSON.parse(re.data.data);
-                    // console.log('返回数据2222',typeof vm.content)
+                    data: mydata,
+                }).then((res)=>{
+                    console.log('查询分类',res.data.data.list)
+                    that.options = res.data.data.list
                 }).catch((err)=>{
                     console.log(err)
                 })
             },
-            //上传文章内容提交获取文章名字
-            searchArticleName(){
-                var content = {
-                    article:JSON.stringify(this.$refs.myQuillEditor._content)
-                }
-                var vm =this;
+            // 获取文章内容
+            searchArticleContent(){
+                
+                var that =this;
+                var myid = this.$store.state.articleEditData.id
+
+                console.log('myid',myid)
+
                 this.$axios({
-                    url: '/safety/upload',
+                    url: '/safety/selectById',
+                    method: 'post',
+                    data: {
+                        id:myid
+                    }
+                }).then((re)=>{
+                    if(re.data.flag){
+                        that.ruleForm = re.data.data;
+                        that.content = JSON.parse(re.data.data.safetyContent)
+                    }
+                    
+                    console.log('re.data.data.safetyContent',typeof re.data.data.safetyContent)
+                }).catch((err)=>{
+                    console.log(err)
+                })
+                
+            },
+
+
+            // 上传图片与预览
+            /* 图片上传 */
+            fileChangeback(e) {  // 加入图片
+                // 图片预览部分
+                var that = this
+                var event = event || window.event;
+                var file = event.target.files
+                var leng=file.length;
+                for(var i=0;i<leng;i++){
+                    var reader = new FileReader();    // 使用 FileReader 来获取图片路径及预览效果
+                    that.imgfilesback.push(file[i])
+                    reader.readAsDataURL(file[i]); 
+                    reader.onload =function(e){
+                    that.imgsback.push(e.target.result);   // base 64 图片地址形成预览                                 
+                    };                 
+                }
+
+                // 图片上传给后台部分
+                var file = that.imgfilesback[0];
+                let form = new FormData(); 
+                form.append('imgFile',file);
+                console.log('form',form)
+                this.$axios({
+                    url: '/tryOut/upload',
+                    method: 'post',
+                    data: form,
+                    headers: {'content-Type':'multipart/form-data'}
+                }).then((re)=>{
+                    that.imgName = re.data.data.url
+                    console.log('that.imgName',that.imgName)
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            },
+
+            //删除图片的方法
+            delimgback(i){
+                this.imgfilesback.splice(i, 1)
+                this.imgsback.splice(i, 1)
+            },
+
+
+
+
+            //编辑后上传数据
+            searchArticleName(){
+                // 获取当前时间戳
+                var that = this
+                var timestamp = (new Date()).valueOf();  
+                var content = {
+                    id:that.ruleForm.id,
+                    title:that.ruleForm.title,
+                    subtitle:that.ruleForm.subtitle,
+                    safetyContent:JSON.stringify(this.$refs.myQuillEditor.value),
+                    url:that.imgName,
+                    typeid:that.ruleForm.value,
+                    quan:that.ruleForm.quan,
+                    views:'',
+                    createTime:timestamp
+                }
+                this.$axios({
+                    url: '/safety/update',
                     method: 'post',
                     data: content
-                }).then((re)=>{
-                    console.log(' vm.myfilename', vm.myfilename)
-                    vm.myfilename = re.data.data
-                    vm.submit();
+                }).then((res)=>{
+                   if(res.data.flag){
+                        that.$message.success('文章添加成功！')
+                        that.$router.push({name: 'Article'});
+                   }
                 }).catch((err)=>{
                     console.log(err)
                 })
             },
             // 编辑后数据提交
-            submit () {
-                var mydata = {
-                    id: this.ruleForm.id,
-                    name: this.ruleForm.name,
-                    author:this.ruleForm.author,
-                    create_time:this.ruleForm.create_time,
-                    update_time:Date.parse(new Date()),
-                    fileName:this.myfilename,
-                    category_id:this.value,
-                }
-                console.log('mydata',mydata)
-                this.$axios({
-                    url: '/article/update',
-                    method: 'post',
-                    data: mydata,
-                }).then((re)=>{
-                     this.$message({
-                            type: 'success',
-                            message: '修改成功!'
-                        });
-                    this.$router.push({name:'Article'})
-                }).catch((err)=>{
-                    console.log(err)
-                })
-            },
+            // submit () {
+            //     var mydata = {
+            //         id: this.ruleForm.id,
+            //         name: this.ruleForm.name,
+            //         author:this.ruleForm.author,
+            //         create_time:this.ruleForm.create_time,
+            //         update_time:Date.parse(new Date()),
+            //         fileName:this.myfilename,
+            //         category_id:this.value,
+            //     }
+            //     console.log('mydata',mydata)
+            //     this.$axios({
+            //         url: '/article/update',
+            //         method: 'post',
+            //         data: mydata,
+            //     }).then((re)=>{
+            //          this.$message({
+            //                 type: 'success',
+            //                 message: '修改成功!'
+            //             });
+            //         this.$router.push({name:'Article'})
+            //     }).catch((err)=>{
+            //         console.log(err)
+            //     })
+            // },
             update(){
                 let inputDOM = this.$refs.contentUpload;
                 this.file = inputDOM.files[0];
@@ -273,5 +382,9 @@ import 'quill/dist/quill.bubble.css'
         margin: 37px 35px;
         padding: 50px;
     }
-    
+    /*上传的图片的大小*/
+    .img{
+        height: 80px;
+        width: 80px;
+    }
 </style>

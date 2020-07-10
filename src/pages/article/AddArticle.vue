@@ -35,15 +35,32 @@
                 </el-form-item>
                 
                 <el-form-item label="权重" prop="quan">
-                   <el-input-number v-model="ruleForm.num" :min="1" :max="10000000" size="mini"></el-input-number>
+                   <el-input-number v-model="ruleForm.quan" :min="1" :max="10000000" size="mini"></el-input-number>
                 </el-form-item>
 
             </el-form>
 
             <div>
+
+
+
+
+            <input type='file' @change="update" ref='contentUpload' id='avatar-uploader'/>
+            <input type='file' @change="updateVideo" ref='contentUpload' id='video-uploader'/>
+            <quill-editor ref="myQuillEditor" 
+                class="myQuillEditor"
+                v-model="content" 
+                :options="quillConfig" >
+                <img id='contentPic'  :src='imgUrl'/>
+            </quill-editor>
+
+
+
             
-            <vue-ueditor-wrap v-model="msg" :config="myConfig"></vue-ueditor-wrap>
-            
+
+
+
+
             <el-button type="primary" @click="submit('ruleForm')">提交</el-button>
             </div>
         </div>
@@ -52,31 +69,34 @@
 
 <script>
 
-import VueUeditorWrap from "vue-ueditor-wrap";
+
+// import { quillEditor } from 'vue-quill-editor'
+import { quillEditor, Quill } from 'vue-quill-editor'
+import {container, ImageExtend} from 'quill-image-extend-module'
+Quill.register('modules/ImageExtend', ImageExtend)
+// import quillConfig from '../../../config/quill-config' 
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+
 
     export default {
         name: "AddArticle",
         components: {
-            VueUeditorWrap
+            quillEditor
         },
         data(){
            return  {
-                msg:'<h1>555555555555555555555555<h1>',
-                myConfig: {
-                    // 编辑器不自动被内容撑高
-                    autoHeightEnabled: false,
-                    // 初始容器高度
-                    initialFrameHeight: 240,
-                    // 初始容器宽度
-                    initialFrameWidth: '100%',
-                    // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-                    serverUrl: 'http://35.201.165.105:8000/controller.php',
-                    // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-                    UEDITOR_HOME_URL: '/static/UEditor/'
-
-                },
+                content:'<h1>555555555555555555555555<h1>',
+                imgUrl:'',
+                editorOption: {},
                 quillOption: '',
                 quillConfig:{},
+                
+               
+                // quillOption: '',
+                // quillConfig:{},
 
                 imgsback: [],      // 图片预览地址
                 imgfilesback: [],  // 图片原文件，上传到后台的数据
@@ -89,7 +109,7 @@ import VueUeditorWrap from "vue-ueditor-wrap";
                     subtitle: '',
                     url:'',
                     value: '',    //文章分类的id
-                    num: 1,//计数器
+                    quan: 1,//计数器
                 },
                 rules: {
                     title: [
@@ -97,23 +117,131 @@ import VueUeditorWrap from "vue-ueditor-wrap";
                     ],
                     subtitle: [
                         { required: true, message: '请填写副标题', trigger: 'blur' }
-                    ],
-                    url: [
-                        { required: true, message: '请上传图片', trigger: 'blur' }
-                    ],
-                    typeid:[
-                        { required: true, message: '请上传选择分类', trigger: 'blur' }
-                    ],
+                    ]
                 },
                 myfilename:'',
                 options: [],
                 
            }
         },
+         created(){
+            // console.log(container, ImageExtend,886)
+            this.actionUrl = '/tryOut/upload';
+            this.quillConfig = {
+			modules: {
+				ImageExtend: {  // 如果不作设置，即{}  则依然开启复制粘贴功能且以base64插入 
+					name: 'imgFile',  // 图片参数名
+					size: 1,  // 可选参数 图片大小，单位为M，1M = 1024kb
+					action: this.actionUrl,  // 服务器地址, 如果action为空，则采用base64插入图片
+					// response 为一个函数用来获取服务器返回的具体图片地址
+					// 例如服务器返回{code: 200; data:{ url: 'baidu.com'}}
+					// 则 return res.data.url
+					response: (res) => {
+						return res.data
+					},
+					headers: (xhr) => {
+					// xhr.setRequestHeader('myHeader','myValue')
+					},  // 可选参数 设置请求头部
+				},
+				 toolbar: {
+                     container:[
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['blockquote', 'code-block'],
+                        [{'header': 1}, {'header': 2}],
+                        [{'list': 'ordered'}, {'list': 'bullet'}],
+                        [{'script': 'sub'}, {'script': 'super'}],
+                        [{'indent': '-1'}, {'indent': '+1'}],
+                        [{'direction': 'rtl'}],
+                        [{'size': ['small', false, 'large', 'huge']}],
+                        [{'header': [1, 2, 3, 4, 5, 6, false]}],
+                        [{'color': []}, {'background': []}],
+                        [{'font': []}],
+                        [{'align': []}],
+                        ['clean'],
+                        ['link', 'image', 'video']
+                    ],
+					handlers: {
+						'image': function (value) {  //劫持quill自身的文件上传，用原生替换
+                            if (value) {
+                                document.querySelector('#avatar-uploader').click()
+                            } else {
+                                this.quill.format('image', false);
+                            }
+                        },
+                        'video':function(value){
+                            //当点击视频上传时，value会变为true
+                            if (value) {
+                                // 触发上传
+                                document.querySelector('#video-uploader').click()
+                                console.log('上传视频')
+                            } else {
+                                this.quill.format('video', false);
+                            }
+                        }
+					}
+				}
+			}
+		}
+        },
         mounted:function(){
             this.getAllcategorize()
         },
         methods: {
+
+            // 上传视频
+            updateVideo(res,file){
+                // 视频上传到腾讯云上
+                var file = e.target.files[0];
+                if (!file) return; // 分片上传文件
+                var a = Math.random();
+                cos.putObject(
+                    {
+                        Bucket,
+                        Region,
+                        // StorageClass: 'STANDARD',
+                        Key: file.name,
+                        Body: file,
+                        onProgress: function(progressData, callback) {
+                        
+                        }
+                    },
+                    function(err, data) {
+                        if(data.statusCode == 200){
+                                Vue.prototype.$message({
+                                    message: '上传成功',
+                                    type: 'success'
+                            })
+                        }else{
+                            Vue.prototype.$message({
+                                    message: '上传失败',
+                                    type: 'warning'
+                            })
+                        }
+                    }
+                );
+
+
+
+                console.log('触发上传视频的方法1',res)
+                console.log('触发上传视频的方法2',file)
+                 // res为文件服务器返回的数据
+                // 获取富文本组件实例
+                let quill = this.$refs.myQuillEditor.quill;
+                // 如果上传成功
+                if (res.code === 200) {
+                    // 使用getSelection来获取光标所在位置
+                    let length = quill.getSelection().index;
+                    // 插入“video”或者“image”  第三个参数为服务器端返回的地址
+                    quill.insertEmbed(length, "video", res.data);
+                    // 调整光标到最后
+                    quill.setSelection(length + 1);
+                    console.log(this.content)
+                } else {
+                    this.$message.error("视频插入失败");
+                }
+                // loading动画消失
+                this.quillUpdateImg = false;
+            },
             // 查询全部分类
             getAllcategorize(){
                 var that = this
@@ -154,7 +282,7 @@ import VueUeditorWrap from "vue-ueditor-wrap";
                 var file = that.imgfilesback[0];
                 let form = new FormData(); 
                 form.append('imgFile',file);
-                
+                console.log('form',form)
                 this.$axios({
                     url: '/tryOut/upload',
                     method: 'post',
@@ -176,16 +304,17 @@ import VueUeditorWrap from "vue-ueditor-wrap";
 
             // 数据提交
             submit (ruleForm) {
+                console.log('JSON.stringify(this.$refs.myQuillEditor._content)',this.$refs.myQuillEditor.value)
                 // 获取当前时间戳
                 var that = this
                 var timestamp = (new Date()).valueOf();  
                 var content = {
                     title:that.ruleForm.title,
                     subtitle:that.ruleForm.subtitle,
-                    safetyContent:that.msg,
+                    safetyContent:JSON.stringify(this.$refs.myQuillEditor.value),
                     url:that.imgName,
-                    typeid:that.ruleForm.value,
-                    quan:that.ruleForm.num,
+                    typeid:'123',
+                    quan:that.ruleForm.quan,
                     views:'',
                     createTime:timestamp
                 }
@@ -196,12 +325,15 @@ import VueUeditorWrap from "vue-ueditor-wrap";
                     if (valid) {
                         // alert('submit!');
                         this.$axios({
-                            url: '/article/add',
+                            url: '/safety/add',
                             method: 'post',
                             data: content,
                         }).then(function (res) {
-                             console.log('添加文章',re)
-                    // that.$router.push({name: 'Article'});
+                             console.log('添加文章',res)
+                            if(res.data.flag){
+                                that.$message.success('文章添加成功！')
+                                that.$router.push({name: 'Article'});
+                            }
                         })
                         .catch(function (error) {
                              console.log(err)
@@ -211,35 +343,51 @@ import VueUeditorWrap from "vue-ueditor-wrap";
                         return false;
                     }
                 });
+
+
+
             },
 
 
 
+            // quill
+            update(){
+                
+                console.log('9999999999999999999999999999999999')
 
-
-
-
-
-
-            //内容上传
-            uploadContent(){
-                var content = {
-                    article:JSON.stringify(this.$refs.myQuillEditor._content)
-                }
-                var vm =this;
+                let inputDOM = this.$refs.contentUpload;
+                this.file = inputDOM.files[0];
+                var formdata = new FormData();
+                // console.log('111111111111',document.getElementById("avatar-uploader").files[0])
+                formdata.append('imgFile',document.getElementById("avatar-uploader").files[0]);
+                console.log('formdata',formdata)
+                
+                var that = this
                 this.$axios({
-                    url: '/article/upload',
+                    url: that.actionUrl,
                     method: 'post',
-                    data: content
+                    data: formdata,
+                    headers: {'content-Type':'multipart/form-data'}
                 }).then((re)=>{
-                    // console.log('上传内容返回的文件名',re.data.data)
-                    vm.myfilename = re.data.data
-                    vm.submit();
+                    that.imgUrl = re.data.data.url
+                    // console.log(this.imgUrl )
+                    let quill = that.$refs.myQuillEditor.quill;
+                    // console.log(this.$refs.myQuillEditor,145)
+                    const range = quill.getSelection();
+                    if(range){
+                        quill.insertEmbed(range.index, 'image',that.imgUrl); 
+                    }  
+                    quill.setSelection(quill.getSelection().index+1)
+                    
                 }).catch((err)=>{
                     console.log(err)
                 })
             },
-            
+
+
+
+
+         
         }
     }
 </script>

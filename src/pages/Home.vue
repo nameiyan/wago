@@ -48,6 +48,22 @@
                                     <i class="el-icon-reading"></i>上传视频
                                 </el-menu-item>
                             </el-submenu>
+                        <!-- 轮播图管理 carouselFigure-->
+                             <el-submenu index="4">
+                                <template slot="title"><span>轮播图管理</span></template>
+                                <el-menu-item index="4-1" @click="goTo('/home/carouselFigure/carouselFigure')">
+                                    <i class="el-icon-reading"></i>轮播图管理
+                                </el-menu-item>
+                                
+                            </el-submenu>
+                        <!-- 用户管理 userMessage-->
+                            <el-submenu index="5">
+                                <template slot="title"><span>用户管理</span></template>
+                                <el-menu-item index="5-1" @click="goTo('/home/userMessage/userMessage')">
+                                    <i class="el-icon-reading"></i>用户管理
+                                </el-menu-item>
+                                
+                            </el-submenu>
                         <!-- 订单管理 
                             <el-submenu index="4">
                                 <template slot="title"><span>订单管理</span></template>

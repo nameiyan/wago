@@ -98,6 +98,7 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
+                
                 // 文章编辑
                 {
                     path: '/home/article/ArticleEdit',
@@ -116,6 +117,27 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
+
+                // 轮播图管理   carouselFigure
+                {
+                    path: '/home/carouselFigure/carouselFigure',
+                    name: 'carouselFigure',
+                    component: resolve => require(['@/pages/carouselFigure/carouselFigure'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
+
+                // 用户管理   userMessage
+                {
+                    path: '/home/userMessage/userMessage',
+                    name: 'userMessage',
+                    component: resolve => require(['@/pages/userMessage/userMessage'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
+
                 // 订单管理
                 {
                     path: '/home/Ordering',
