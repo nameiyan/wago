@@ -125,15 +125,7 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
-                //添加视频   uploadVideo
-                {
-                    path: '/home/article/uploadVideo',
-                    name: 'uploadVideo',
-                    component: resolve => require(['@/pages/article/uploadVideo'], resolve),
-                    meta: {
-                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                    }
-                },
+                
                 // 轮播图管理   carouselFigure
                 {
                     path: '/home/carouselFigure/carouselFigure',

@@ -25,7 +25,7 @@
                </div>
                <div>
                    <el-button type="primary" plain @click="addArticle()" class="toadd">添加文章</el-button>
-                   <el-button type="primary" plain @click="addVideo()" class="toadd">添加视频</el-button>
+                   <!-- <el-button type="primary" plain @click="addVideo()" class="toadd">添加视频</el-button> -->
                 </div>
             </div>
 
@@ -63,29 +63,6 @@
                     </template>
                 </el-table-column>
 
-                <!-- <el-table-column
-                    prop="category_id"
-                    label="分类"
-                    width="100">
-                     <template slot-scope="scope">
-                         {{ scope.row.category_id == '1' ? '记叙文' : (scope.row.category_id == '2' ? '抒情文' : (scope.row.category_id == '3' ? '议论文' : 
-                         (scope.row.category_id == '4' ? '说明文' : (scope.row.category_id == '5' ? '应用文' : '其他'))))}}
-                    </template>
-                </el-table-column>
-
-                <el-table-column
-                    prop="views"
-                    label="浏览量"
-                    width="80">
-                </el-table-column>
-                <el-table-column
-                    prop="create_time_change"
-                    label="创建时间">
-                </el-table-column>
-                <el-table-column
-                    prop="update_time_change"
-                    label="修改时间">
-                </el-table-column> -->
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button

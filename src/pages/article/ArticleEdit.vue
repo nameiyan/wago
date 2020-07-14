@@ -46,44 +46,82 @@
             </el-form>
            
 
+           <!-- safetyContent -->
+           <!-- <video autoplay src="https://fluploadvideo.oss-cn-beijing.aliyuncs.com/studio_course/20200714154033.mp4"></video>  -->
 
 
 
-            <div style="display:flex;justify-content:flex-end;padding:10px 0">
-                <input type='file' @change="update" ref='contentUpload' id='avatar-uploader' />
-            </div>
+            
+
+           
             <quill-editor ref="myQuillEditor" 
                 class="myQuillEditor"
                 v-model="content" 
                 :options="quillConfig" >
                 <img id='contentPic'  :src='imgUrl'/>
+                <video id='contentVid' :src="videoUrl"></video>
             </quill-editor>
             <el-button type="primary" @click="searchArticleName()">提交</el-button>
 
 
 
+             <div style="display:flex;justify-content:flex-end;padding:10px 0">
+                <input type='file' @change="update" ref='contentUpload' id='avatar-uploader' />
+                <input type='file' @change="updateVideo($event)" ref='videoUpload' id='video-uploader'/>
+            </div>
 
-            <!-- <image  src='http://wagogzh.oss-cn-beijing.aliyuncs.com/QRCode/QRCode/38079c7d-6445-4769-80f0-1a7452d35d17.txt'  >
 
-            </image> -->
-          
         </div>
     </div>
 </template>
 
 <script>
-// import { quillEditor } from 'vue-quill-editor'
-import { quillEditor, Quill } from 'vue-quill-editor'
-import {container, ImageExtend} from 'quill-image-extend-module'
-Quill.register('modules/ImageExtend', ImageExtend)
-// import quillConfig from '../../../config/quill-config' 
+
+
+import OSS from 'ali-oss'
+
+var client = new OSS.Wrapper({
+    region: 'oss-cn-beijing',
+    // LTAIo0TudvEE7jJB
+    accessKeyId: 'LTAIo0TudvEE7jJB',
+    // EgBSBhBPG3c1yWzE3KA4QSpVaFQt92
+    accessKeySecret: 'EgBSBhBPG3c1yWzE3KA4QSpVaFQt92',
+    bucket: 'fluploadvideo'
+});
+
+
+
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+// import { quillEditor } from 'vue-quill-editor'
+import { quillEditor, Quill } from 'vue-quill-editor'
+// import { container, ImageExtend } from 'quill-image-extend-module'
+
+import { container, addQuillTitle } from 'quill-video-image-module'
+import { ImageExtend, QuillWatch } from 'quill-video-image-module/quill-image-module'
+import { VideoExtend, QuillVideoWatch } from 'quill-video-image-module/quill-video-module'
+
+// import ImageResize from 'quill-image-resize-module'
+
+// 引入video模块并注册
+import video from 'quill-video-image-module/video'
+
+Quill.register(video, true)
+
+//   Quill.register('modules/ImageResize', ImageResize)
+  Quill.register('modules/ImageExtend', ImageExtend)
+  Quill.register('modules/VideoExtend', VideoExtend)
+// import quillConfig from '../../../config/quill-config' 
+
+
+
     export default {
         name: "ArticleEdit",
         data(){
            return  {
+
+
                 dataList:'',    //从文章页面传递过来的数据  对应条
             //    图片上传
                 imgsback: [],      // 图片预览地址
@@ -93,6 +131,7 @@ import 'quill/dist/quill.bubble.css'
                
                 content: '',
                 imgUrl:'',
+                videoUrl:'',//富文本中视频的url
                 editorOption: {},
                 quillOption: '',
                 quillConfig:{},
@@ -142,7 +181,24 @@ import 'quill/dist/quill.bubble.css'
 					headers: (xhr) => {
 					// xhr.setRequestHeader('myHeader','myValue')
 					},  // 可选参数 设置请求头部
-				},
+                },
+                VideoExtend: {
+                    loading: true,
+                    name: 'img',
+                    size: 100, // 可选参数 视频大小，单位为M，1M = 1024kb
+                    action: 'https://fluploadvideo.oss-cn-beijing.aliyuncs.com/studio_course/', // 视频上传接口
+                    headers: (xhr) => {
+                        // set custom token(optional)
+                    },
+                    response: (res) => {
+                        // video uploaded path
+                        // custom your own
+                        return res.data.url;
+                    },
+                    sizeError: () => {
+                        alert('视频不能大于100M')
+                    }
+                },
 				 toolbar: {
                      container:[
                         ['bold', 'italic', 'underline', 'strike'],
@@ -162,12 +218,22 @@ import 'quill/dist/quill.bubble.css'
                     ],
 					handlers: {
 						'image': function (value) {  //劫持quill自身的文件上传，用原生替换
-						if (value) {
-								document.querySelector('#avatar-uploader').click()
-							} else {
-								this.quill.format('image', false);
-							}
-						}
+                            if (value) {
+                                document.querySelector('#avatar-uploader').click()
+                            } else {
+                                this.quill.format('image', false);
+                            }
+                        },
+                        'video':function(value){
+                        //当点击视频上传时，value会变为true
+                        if (value) {
+                            // 触发上传
+                            document.querySelector('#video-uploader').click()
+                            console.log('触发上传视频')
+                        } else {
+                            this.quill.format('video', false);
+                        }
+                    }
 					}
 				}
 			}

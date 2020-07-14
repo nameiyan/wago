@@ -200,7 +200,7 @@ Quill.register(video, true)
                     loading: true,
                     name: 'img',
                     size: 100, // 可选参数 视频大小，单位为M，1M = 1024kb
-                    action: '', // 视频上传接口
+                    action: 'https://fluploadvideo.oss-cn-beijing.aliyuncs.com/studio_course/', // 视频上传接口
                     headers: (xhr) => {
                         // set custom token(optional)
                     },
