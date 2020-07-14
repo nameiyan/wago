@@ -44,8 +44,8 @@
                                 <el-menu-item index="3-1" @click="goTo('/home/Article')">
                                     <i class="el-icon-reading"></i>用电安全
                                 </el-menu-item>
-                                <el-menu-item index="3-2" @click="goTo('/home/Article/uploadVideo')">
-                                    <i class="el-icon-reading"></i>上传视频
+                                <el-menu-item index="3-2" @click="goTo('/home/Article/Articletype')">
+                                    <i class="el-icon-reading"></i>类型查看
                                 </el-menu-item>
                             </el-submenu>
                         <!-- 轮播图管理 carouselFigure-->
@@ -85,15 +85,12 @@
                                 </el-menu-item>
                             </el-submenu>-->
                          <!--     积分管理   pointManagement    -->
-                            <!-- <el-submenu index="6">
+                            <el-submenu index="6">
                                 <template slot="title"><span>积分管理</span></template>
                                 <el-menu-item index="6-1" @click="goTo('/home/pointManagement')">
                                     <i class="el-icon-reading"></i>积分查询
                                 </el-menu-item>
-                                <el-menu-item index="6-2" @click="goTo('/home/changePoint')">
-                                    <i class="el-icon-reading"></i>积分修改
-                                </el-menu-item>
-                            </el-submenu> -->
+                            </el-submenu>
                         <!-- 权限管理 -->
                             <!-- <el-submenu index="1">
                                 <template slot="title"><span>权限管理</span></template>

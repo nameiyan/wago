@@ -25,6 +25,7 @@
                </div>
                <div>
                    <el-button type="primary" plain @click="addArticle()" class="toadd">添加文章</el-button>
+                   <el-button type="primary" plain @click="addVideo()" class="toadd">添加视频</el-button>
                 </div>
             </div>
 
@@ -34,8 +35,8 @@
                 style="width: 100%">
 
                 <el-table-column
-                    prop="id"
-                    label="id"
+                    type="index"
+                    label="ID"
                     width="80"
                     align="center">
                 </el-table-column>
@@ -144,6 +145,10 @@ import CheckArticle from './CheckArticle.vue'
             this.requireArticle()
         },
         methods: {
+            // 添加视频
+            addVideo(){
+                this.$router.push({name: 'uploadVideo'});
+            },
             //  跳转到添加文章的页面
             addArticle(){
                 this.$router.push({name: 'AddArticle'});
@@ -194,7 +199,7 @@ import CheckArticle from './CheckArticle.vue'
              },
             //  编辑文章按钮
             handleEdit(index, row) {
-                console.log(index, row);
+                // console.log(index, row);
                 this.$store.commit('articleEditData',row)     //存储需要编辑的数据  （方法名称，唯一参数）
                 this.$router.replace('/home/article/ArticleEdit');
             },
@@ -309,6 +314,6 @@ import CheckArticle from './CheckArticle.vue'
     .toadd{
         height: 40px;
         width: 120px;
-        margin: 20px 60px 0 0;
+        margin: 20px 40px 0 0;
     }
 </style>

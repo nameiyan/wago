@@ -88,17 +88,25 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
-
-                // 文章查看CheckArticle
+                //  查看用电安全类型 Articletype
                 {
-                    path: '/home/article/CheckArticle',
-                    name: 'CheckArticle',
-                    component: resolve => require(['@/pages/article/CheckArticle'], resolve),
+                    path: '/home/article/Articletype',
+                    name: 'Articletype',
+                    component: resolve => require(['@/pages/article/Articletype'], resolve),
                     meta: {
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
                 
+                 //  添加用电安全类型 AddArticletype
+                 {
+                    path: '/home/article/AddArticletype',
+                    name: 'AddArticletype',
+                    component: resolve => require(['@/pages/article/AddArticletype'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
                 // 文章编辑
                 {
                     path: '/home/article/ArticleEdit',
@@ -117,7 +125,15 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
-
+                //添加视频   uploadVideo
+                {
+                    path: '/home/article/uploadVideo',
+                    name: 'uploadVideo',
+                    component: resolve => require(['@/pages/article/uploadVideo'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                    }
+                },
                 // 轮播图管理   carouselFigure
                 {
                     path: '/home/carouselFigure/carouselFigure',
@@ -127,7 +143,15 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
-
+                // 添加轮播图   addCarouselFigure
+                {
+                    path: '/home/carouselFigure/addCarouselFigure',
+                    name: 'addCarouselFigure',
+                    component: resolve => require(['@/pages/carouselFigure/addCarouselFigure'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
                 // 用户管理   userMessage
                 {
                     path: '/home/userMessage/userMessage',
@@ -192,15 +216,7 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                     }
                 },
-                // 积分管理》》修改积分   changePoint
-                {
-                    path: '/home/changePoint',
-                    name: 'changePoint',
-                    component: resolve => require(['@/pages/pointManagement/changePoint'], resolve),
-                    meta: {
-                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                    }
-                },
+               
             ]
         }
     ]

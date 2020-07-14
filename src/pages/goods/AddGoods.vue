@@ -109,7 +109,6 @@
 
                 var vm = this;
                 this.$axios.post("/product/add", formLabelAlign).then(function(response) {
-                    console.log("3333333333333333333", response);
                     if(response.data.flag){
                          vm.$message({
                             type: 'success',

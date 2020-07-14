@@ -7,17 +7,9 @@
             </div>
         </div>
         <div class="manege-content">
-
-            <!-- <div class="searchtop">
-                <el-select @change="search" class="select" v-model="value" filterable placeholder="请选择">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-
+           
+           <div class="searchtop">
+                
                 <div class="search">
                      <el-input class="elinput" clearable
                         placeholder="请输入内容"
@@ -27,99 +19,64 @@
                     <el-button @click="searchFuzzy" plain style="height:40px;margin-left:20px" type="primary" size="mini">查询</el-button>
                 </div>
 
-            </div> -->
-
-            <!-- <el-table
-                :data="cardList"
+            </div>
+ 
+             <el-table
+                :data="UserList"
                 style="width: 100%"
                 border>
                 <el-table-column
                     type="index"
                     label="ID"
                     sortable
-                    width="60"
                     align="center">
                 </el-table-column>
                 
                 <el-table-column
-                    prop="cardVx"
-                    label="微信"
-                    width="130"
+                    prop="phone"
+                    label="电话号码"
                     align="center">
                 </el-table-column>
 
                 <el-table-column
-                    prop="cardStatus"
-                    label="是否为总公司"
-                    width="80"
+                    prop="nickname"
+                    label="昵称"
                     align="center">
-                    
+                </el-table-column>
+
+                <el-table-column
+                    prop="headimgurl"
+                    label="头像"
+                    align="center">
                     <template slot-scope="scope">
-                         {{ scope.row.cardStatus == '1' ? '否' : (scope.row.cardStatus == '2' ? '是' : '')}}
+                        <img v-if="scope.row.headimgurl != ''" :src="scope.row.headimgurl" alt style="height:100px;width:100px" />
+                        <img v-else src="../../assets/images/undefined.png" alt style="height:100px;width:100px" />
                     </template>
                 </el-table-column>
 
-                <el-table-column label="操作" align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            size="mini"
-                            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button
-                            size="mini"
-                            type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                    </template>
+                <el-table-column
+                    prop="channel"
+                    label="渠道"
+                    align="center">
                 </el-table-column>
-            </el-table> -->
-            <!-- <el-pagination
+
+                <el-table-column
+                    prop="distributor"
+                    label="经常采购的经销商"
+                    align="center">
+                </el-table-column>
+
+                
+            </el-table> 
+            <el-pagination
                 @size-change='changeSize'
                 @current-change='changePage'
 
                 :page-size="nowpageSize"
                 layout="total, prev, pager, next, jumper"
                 :total='cardListtotal'>
-            </el-pagination>  -->
-            <!--编辑弹窗-->
-            <!-- <el-dialog
-                title="编辑公司名片"
-                :visible.sync="updataVisible"
-                width="70%"
-                center>
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-                     <el-form-item label="姓名" prop="cardName">
-                        <el-input v-model="ruleForm.cardName"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="公司名称" prop="cardMingcheng">
-                        <el-input v-model="ruleForm.cardMingcheng"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="手机号" prop="cardPhone">
-                        <el-input v-model="ruleForm.cardPhone"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="微信号" prop="cardVx">
-                        <el-input v-model="ruleForm.cardVx"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="地址" prop="cardAddress">
-                        <el-input v-model="ruleForm.cardAddress"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="负责区域" prop="cardResponsiblearea">
-                        <el-input v-model="ruleForm.cardResponsiblearea"></el-input>
-                    </el-form-item>
-                
-                <el-form-item  label="是否为分公司" prop="cardStatus"> -->
-                    <!-- 1：分公司    2：总公司 -->
-                    <!-- <el-radio v-model="ruleForm.cardStatus" label="1">是</el-radio>   
-                    <el-radio v-model="ruleForm.cardStatus" label="2">否</el-radio>
-                </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
-                    </el-form-item>
-                </el-form>
-            </el-dialog> -->
+            </el-pagination>
+            
         </div>  
     </div>
 </template>
@@ -129,7 +86,11 @@
         name: "userMessage",
         data(){
             return{
-               
+                nowpage: 1,
+                nowpageSize: 10,
+                cardListtotal:null,  //总条数
+                UserList:[],  //用户的数据
+                searchInput:'',//模糊查询的绑定值
             }
         },
         
@@ -140,26 +101,42 @@
             
         },
         methods: {
+            // 模糊查询
+            searchFuzzy(){
+                console.log('searchInput',this.searchInput)
+                this.getuserMessage()
+            },
+            // 初始数据查询
             getuserMessage(){
-                console.log('1111111111111111111111')
-
+                var that = this
+                var mydata = {
+                    currentPage:that.nowpage,
+                    pageSize:that.nowpageSize,
+                    queryString:that.searchInput
+                }
                 this.$axios({
                     url: '/user/selectUser',
                     method: 'post',
-                    data: {
-                        id:myid
-                    }
+                    data: mydata,
                 }).then((res)=>{
-                    console.log('',)
-                    // if(re.data.flag){
-                    //     that.ruleForm = re.data.data;
-                    //     that.content = JSON.parse(re.data.data.safetyContent)
-                    // }
+                    that.UserList = res.data.rows;
+                    that.cardListtotal = res.data.total
                     
                 }).catch((err)=>{
                     console.log(err)
                 })
-            }
+            },
+            // 分页的页数
+            changePage(page) {
+                this.nowpage = page;
+                this.getuserMessage();
+            },
+            // 分页的每页有多少条数据
+            changeSize(pagesize) {
+                this.nowpageSize = pagesize;
+                this.nowpage = 1;
+                this.getuserMessage();
+            },
         }
     }
     
@@ -183,7 +160,6 @@
     .manege-content{
         background: #fff;
         margin: 37px 35px;
-        padding: 30px;
         position: relative;
     }
     .no-msg>.top-title{
@@ -211,7 +187,7 @@
         justify-content: flex-start;
     }
     .search{
-        margin-left: 30px;
+        margin: 20px 0 20px 30px;
         display: flex;
         justify-content: flex-start;
     }

@@ -13,22 +13,22 @@
                     <el-input v-model="ruleForm.subtitle"></el-input>
                 </el-form-item>
                 <el-form-item label="文章类型" prop="typeid">
-                        <el-select v-model="ruleForm.value" clearable placeholder="请选择文章类型">
+                        <el-select v-model="ruleForm.typeid" clearable placeholder="请选择文章类型">
                         <el-option
                             v-for="item in options"
-                            :key="item.value"
+                            :key="item.typeid"
                             :label="item.typeName"
                             :value="item.typeid">
                         </el-option>
+                        
                     </el-select>
                 </el-form-item>
                 
                 <el-form-item label="图片" prop="url">
-
+                    
                     <div v-if="ruleForm.url.length > 0">
                         <img class="img" :src="ruleForm.url" alt="" style="height:100px;width:100px">
                     </div>
-
                     <div v-if='imgsback.length>0' class="flex">
                         <div class="img-box" v-for="(item, i) in imgsback" :key='i' >
                             <img class="img" :src="item" alt=""> <span @click="delimgback(i)"><i class="el-icon-delete"></i></span>
@@ -100,7 +100,7 @@ import 'quill/dist/quill.bubble.css'
                     title: '',
                     subtitle: '',
                     url:'',
-                    value: '',    //文章分类的id
+                    typeid: '',    //文章分类的id
                     quan: 1,//计数器
                 },
                 rules: {
@@ -195,7 +195,7 @@ import 'quill/dist/quill.bubble.css'
                     method: 'post',
                     data: mydata,
                 }).then((res)=>{
-                    console.log('查询分类',res.data.data.list)
+                    // console.log('查询分类',res.data.data.list)
                     that.options = res.data.data.list
                 }).catch((err)=>{
                     console.log(err)
@@ -206,22 +206,21 @@ import 'quill/dist/quill.bubble.css'
                 
                 var that =this;
                 var myid = this.$store.state.articleEditData.id
-
                 console.log('myid',myid)
-
                 this.$axios({
                     url: '/safety/selectById',
                     method: 'post',
                     data: {
                         id:myid
                     }
-                }).then((re)=>{
-                    if(re.data.flag){
-                        that.ruleForm = re.data.data;
-                        that.content = JSON.parse(re.data.data.safetyContent)
+                }).then((res)=>{
+                    console.log('res',res)
+                    if(res.data.flag){
+                        that.ruleForm = res.data.data;
+                        that.content = JSON.parse(res.data.data.safetyContent)
                     }
                     
-                    console.log('re.data.data.safetyContent',typeof re.data.data.safetyContent)
+                    console.log('re.data.data',re.data.data)
                 }).catch((err)=>{
                     console.log(err)
                 })
@@ -250,7 +249,7 @@ import 'quill/dist/quill.bubble.css'
                 var file = that.imgfilesback[0];
                 let form = new FormData(); 
                 form.append('imgFile',file);
-                console.log('form',form)
+                // console.log('form',form)
                 this.$axios({
                     url: '/tryOut/upload',
                     method: 'post',
@@ -283,12 +282,14 @@ import 'quill/dist/quill.bubble.css'
                     title:that.ruleForm.title,
                     subtitle:that.ruleForm.subtitle,
                     safetyContent:JSON.stringify(this.$refs.myQuillEditor.value),
-                    url:that.imgName,
-                    typeid:that.ruleForm.value,
+                    url:that.imgName != '' ? that.imgName : that.ruleForm.url,
+                    typeid:that.ruleForm.typeid,
                     quan:that.ruleForm.quan,
                     views:'',
                     createTime:timestamp
                 }
+                console.log('that.ruleForm.typeid',that.ruleForm.typeid)
+                console.log('that.imgName',that.imgName)
                 this.$axios({
                     url: '/safety/update',
                     method: 'post',

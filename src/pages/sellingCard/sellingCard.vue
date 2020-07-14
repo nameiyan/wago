@@ -495,8 +495,8 @@ import {validateMobile} from '../../assets/javascript/validate.js';
     .manege-content{
         background: #fff;
         margin: 37px 35px;
-        padding: 30px;
         position: relative;
+        padding-top: 20px;
     }
     .no-msg>.top-title{
        height: 66px;
@@ -521,6 +521,8 @@ import {validateMobile} from '../../assets/javascript/validate.js';
     .searchtop{
         display: flex;
         justify-content: flex-start;
+        margin: 20px 0 20px 30px;
+
     }
     .search{
         margin-left: 30px;

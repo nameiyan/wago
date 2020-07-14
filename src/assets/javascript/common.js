@@ -18,7 +18,8 @@ export default {
                 accessKeySecret: 'K64ojjB8jKqgIcp69Hk9E6IEBeqW3s',
                 bucket: 'tuangou-2'
             },
-            Vue.prototype.aliurl = 'https://tuangou-2.oss-cn-beijing.aliyuncs.com/', //阿里云拼接路径
+            // Vue.prototype.aliurl = 'https://tuangou-2.oss-cn-beijing.aliyuncs.com/', //阿里云拼接路径
+            Vue.prototype.aliurl = 'https://fluploadvideo.oss-cn-beijing.aliyuncs.com/',   //添加文章的视频下载的阿里云的地址
             Vue.prototype._ajax = function (url, option, callback, hedas) {
                 if (hedas == undefined) {
                     hedas = {}

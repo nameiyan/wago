@@ -1,193 +1,344 @@
 <template>
     <div class="no-msg top">
-        <div class="top-title">
+       <!-- <div class="manege-content">
+           <div style="height:60px;background:red">
+               <el-scrollbar style="height:100%">
+                   <div style="wifth:70px;height:70px;border:solid"></div>
+               </el-scrollbar>
+           </div>
+       </div> -->
+       <div class="top-title">
             <div class="titlelist">
                 <img src="../../assets/images/manege.png" alt="" height="19px" width="19px">
-                <span>轮播图</span>
+                <span>用电安全</span>
             </div>
         </div>
         <div class="manege-content">
+            <div class="search" >
+                <el-button type="primary" plain @click="addCarouse()" class="toadd">添加轮播图</el-button>
+            </div>
+            <el-table
+                :data="tableData"
+                border
+                style="width: 100%">
 
-            <!-- <div class="searchtop">
-
-                <el-select @change="search" class="select" v-model="value" filterable placeholder="请选择">
-                    <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-
-                <div class="search">
-                     <el-input class="elinput" clearable
-                        placeholder="请输入内容"
-                        v-model="searchInput">
-                        <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                    </el-input>
-                    <el-button @click="searchFuzzy" plain style="height:40px;margin-left:20px" type="primary" size="mini">查询</el-button>
-                </div>
-
-            </div> -->
-
-            <!-- <el-table
-                :data="cardList"
-                style="width: 100%"
-                border>
                 <el-table-column
                     type="index"
                     label="ID"
-                    sortable
-                    width="60"
-                    align="center">
-                </el-table-column>
-                
-                <el-table-column
-                    prop="cardVx"
-                    label="微信"
-                    width="130"
+                    width="80"
                     align="center">
                 </el-table-column>
 
                 <el-table-column
-                    prop="cardStatus"
-                    label="是否为总公司"
-                    width="80"
+                    prop="img"
+                    label="图片"
                     align="center">
-                    
                     <template slot-scope="scope">
-                         {{ scope.row.cardStatus == '1' ? '否' : (scope.row.cardStatus == '2' ? '是' : '')}}
+                        <img v-if="scope.row.img != ''" :src="scope.row.img" alt style="height:100px;width:100px" />
+                        <img v-else src="../../assets/images/undefined.png" alt style="height:100px;width:100px" />
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                    prop="cannel"
+                    label="渠道"
+                    align="center">
+                    <template slot-scope="scope">
+                        {{ scope.row.cannel == '1' ? '首页轮播图' : (scope.row.cannel == '2' ? '用电安全轮播图' : '')}}
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                    prop="status"
+                    label="是否显示"
+                    align="center">
+                    <template slot-scope="scope">
+                        {{ scope.row.cannel == '1' ? '是' : (scope.row.cannel == '2' ? '否' : '')}}
                     </template>
                 </el-table-column>
 
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button
-                            size="mini"
-                            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        size="mini"
+                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <!-- <el-button
+                        size="mini"
+                        @click="handleCheck(scope.$index, scope.row)">查看</el-button> -->
                         <el-button
-                            size="mini"
-                            type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        size="mini"
+                        type="danger"
+                        @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
-            </el-table> -->
-            <!-- <el-pagination
-                @size-change='changeSize'
-                @current-change='changePage'
-
+            </el-table>
+            <!-- 分页 -->
+            <el-pagination
+                @size-change="changeSize"
+                @current-change="changePage"
                 :page-size="nowpageSize"
-                layout="total, prev, pager, next, jumper"
-                :total='cardListtotal'>
-            </el-pagination>  -->
-            <!--编辑弹窗-->
-            <!-- <el-dialog
-                title="编辑公司名片"
-                :visible.sync="updataVisible"
+                 layout="total, prev, pager, next, jumper"
+                :total="total">
+            </el-pagination>
+             <el-dialog
+                title=""
+                ref='wany'
+                :visible.sync="checkarticlevisible"
                 width="70%"
                 center>
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-                     <el-form-item label="姓名" prop="cardName">
-                        <el-input v-model="ruleForm.cardName"></el-input>
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="活动名称" prop="img">
+
+                        <div v-if="imgshow">
+                            <img style="height:100px;width:100px" :src="ruleForm.img" alt="">
+                        </div>
+
+                        <div v-if='imgsback.length>0' class="flex">
+                            <div class="img-box" v-for="(item, i) in imgsback" :key='i' >
+                                <img class="img" :src="item" alt=""> <span @click="delimgback(i)"><i class="el-icon-delete"></i></span>
+                            </div>
+                        </div>
+                        <div class="img-file" v-if='imgsback.length < sizeback'>
+                        <input type="file" id='files' @change='fileChangeback($event)'>
+                                <label for="files"></label>
+                        </div>
+                    </el-form-item>
+                    
+                    <el-form-item label="是否显示" prop="status">
+                        <el-radio v-model="ruleForm.status" label="1">是</el-radio>
+                        <el-radio v-model="ruleForm.status" label="2">否</el-radio>
                     </el-form-item>
 
-                    <el-form-item label="公司名称" prop="cardMingcheng">
-                        <el-input v-model="ruleForm.cardMingcheng"></el-input>
+                    <el-form-item label="渠道" prop="cannel">
+                        <el-radio v-model="ruleForm.cannel" label="1">首页轮播图</el-radio>
+                        <el-radio v-model="ruleForm.cannel" label="2">用电安全轮播图</el-radio>
                     </el-form-item>
 
-                    <el-form-item label="手机号" prop="cardPhone">
-                        <el-input v-model="ruleForm.cardPhone"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="微信号" prop="cardVx">
-                        <el-input v-model="ruleForm.cardVx"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="地址" prop="cardAddress">
-                        <el-input v-model="ruleForm.cardAddress"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="负责区域" prop="cardResponsiblearea">
-                        <el-input v-model="ruleForm.cardResponsiblearea"></el-input>
-                    </el-form-item>
-                
-                <el-form-item  label="是否为分公司" prop="cardStatus"> -->
-                    <!-- 1：分公司    2：总公司 -->
-                    <!-- <el-radio v-model="ruleForm.cardStatus" label="1">是</el-radio>   
-                    <el-radio v-model="ruleForm.cardStatus" label="2">否</el-radio>
-                </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
+                        <el-button class="but" type="primary" @click="submitForm('ruleForm')">立即修改</el-button>
                     </el-form-item>
                 </el-form>
-            </el-dialog> -->
-        </div>  
+            </el-dialog>
+       </div>
     </div>
 </template>
 
 <script>
     export default {
         name: "carouselFigure",
+        inject:['reload'],
         data(){
             return{
-               
+                tableData: [],
+                nowpage: 1,
+                nowpageSize: 10,
+                total:null,
+                checkarticlevisible:false,   //编辑的弹出框是否显示
+
+                imgsback: [],      // 图片预览地址
+                imgfilesback: [],  // 图片原文件，上传到后台的数据
+                sizeback: 1 ,      // 限制上传数量
+                imgName:'',        //图片的url
+
+                ruleForm: {
+                    img:'',
+                    status:'1',
+                    cannel:'1'
+                },
+                rules:{
+                    img:[],
+                    status:[],
+                    cancel:[]
+                },
+
+                imgshow:true,     //编辑的图片是否显示
+                originalData:[],    //原始数据
             }
         },
-        
         created(){
-           this.getMessageList()
+            // this.adminName = sessionStorage.getItem('admin_name')
+          
         },
         mounted(){
-            
+            this.getlist()
         },
         methods: {
-            getMessageList(){
-
-                console.log('333333333333333333333333333')
-                var that = this;
-                var param = {
-                    page:1,
-                    size:10
-                };
-
+            // 修改轮播图的数据提交
+            submitForm(){
+                var that = this
+                console.log('this.ruleForm',this.ruleForm)
+                var mydata = {
+                    id:this.ruleForm.id,
+                    img:this.imgName != '' ? this.imgName : this.ruleForm.img,
+                    status:this.ruleForm.status,
+                    cannel:this.ruleForm.cannel
+                }
+                console.log('mydata',mydata)
                 this.$axios({
-                   url:'/lunbotu/selectByPage',
-                   data:param,
-                   method:'post'
-                }).then(function (res) {
-                   console.log('res',res)
-                   
-                   
-                })
-                .catch(function (error) {
+                    url: '/lunbotu/update',
+                    method: 'post',
+                    data: mydata,
+                }).then((res)=>{
+                    console.log('res',res)
+                    if(res.data.flag){
+                        that.checkarticlevisible = false
+                        that.reload()
+                    }
+                    
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            },
+            // 修改轮播图
+            handleEdit(index,row){
+                console.log('row',row)
+                this.checkarticlevisible = true
+                this.ruleForm.id = row.id
+                this.ruleForm.status = JSON.stringify(row.status)
+                this.ruleForm.cannel = JSON.stringify(row.cannel)
+                this.ruleForm.img = row.img
+            },
+            // 跳转到添加轮播图的页面
+            addCarouse:function(){
+                this.$router.push({name:'addCarouselFigure'})
+            },
+            // 获取所有轮播图的数据
+            getlist(){
+                var that = this
+                var mydata = {
+                    page:this.nowpage,
+                    size:this.nowpageSize
+                }
+                this.$axios({
+                    url: '/lunbotu/selectByPage',
+                    method: 'post',
+                    data: mydata,
+                }).then((res)=>{
+                    console.log('res',res)
+                    if(res.data.flag){
+                        that.tableData = res.data.data.list
+                        that.total = res.data.data.total
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            },
+            // 删除
+            handleDelete(index,row){
+                console.log('row',row)
+                var that = this
+                var mydata = {
+                    id:row.id
+                }
+                console.log('mydata',mydata)
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios({
+                        url: '/lunbotu/delete',
+                        method: 'post',
+                        data: mydata,
+                    }).then((res)=>{
+                        console.log('res',res)
+                        if(res.data.flag){
+                            that.$message.success('删除成功！')
+                            that.reload()
+                        }
+                    }).catch((err)=>{
+                        console.log(err)
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+                
+            },
+             // 分页的页数
+            changePage(page) {
+                 console.log('page',page)
+                this.nowpage = page;
+                this.getlist();
+            },
+            // 分页的每页有多少条数据
+            changeSize(pagesize) {
+                this.nowpageSize = pagesize;
+                this.nowpage = 1;
+                this.getlist();
+            },
+            // 分页结束
 
-                 });
-            }
+            // 上传图片与预览
+            /* 图片上传 */
+            fileChangeback(e) {  // 加入图片
+                // 图片预览部分
+                var that = this
+                var event = event || window.event;
+                var file = event.target.files
+                var leng=file.length;
+                for(var i=0;i<leng;i++){
+                    var reader = new FileReader();    // 使用 FileReader 来获取图片路径及预览效果
+                    that.imgfilesback.push(file[i])
+                    reader.readAsDataURL(file[i]); 
+                    reader.onload =function(e){
+                    that.imgsback.push(e.target.result);   // base 64 图片地址形成预览                                 
+                    };                 
+                }
+
+                // 图片上传给后台部分
+                var file = that.imgfilesback[0];
+                let form = new FormData(); 
+                form.append('imgFile',file);
+                console.log('form',form)
+                this.$axios({
+                    url: '/tryOut/upload',
+                    method: 'post',
+                    data: form,
+                    headers: {'content-Type':'multipart/form-data'}
+                }).then((re)=>{
+                    that.imgName = re.data.data.url
+                    that.imgshow = false
+                    console.log('that.imgName',that.imgName)
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            },
+
+            //删除图片的方法
+            delimgback(i){
+                this.imgfilesback.splice(i, 1)
+                this.imgsback.splice(i, 1)
+            },
         }
     }
-    
 </script>
 <style>
-
+   .el-scrollbar_wrap{
+       overflow-x: hidden;
+   }
+   .no-msg .manege-content .el-pagination{
+        padding: 15px 15px;
+        margin-bottom: 150px;
+        justify-content:flex-end !important;
+    }
 </style>
 <style scoped>
+
     .no-msg{
         font-size: 16px;
         width:100%;
         height: 100%;
-        overflow: hidden;
-
     }
     .top{
         /*color: #f57866;*/
         color: #409EFF;
-       
     }
     .manege-content{
         background: #fff;
         margin: 37px 35px;
-        padding: 30px;
-        position: relative;
     }
     .no-msg>.top-title{
        height: 66px;
@@ -206,16 +357,18 @@
         /* display:inline-block; */
         vertical-align:middle;
     }
-    .select{
-        margin-bottom:10px
-    }
-    .searchtop{
-        display: flex;
-        justify-content: flex-start;
-    }
     .search{
-        margin-left: 30px;
         display: flex;
-        justify-content: flex-start;
+        justify-content: flex-end;
+
+    }
+    .toadd{
+        height: 40px;
+        width: 120px;
+        margin: 20px 80px 20px 0;
+    }
+    .img{
+        height: 100px;
+        width: 100px;
     }
 </style>
