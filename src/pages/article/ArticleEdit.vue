@@ -322,6 +322,7 @@ Quill.register(video, true)
                     data: form,
                     headers: {'content-Type':'multipart/form-data'}
                 }).then((re)=>{
+                    console.log('rererere',re)
                     that.imgName = re.data.data.url
                     console.log('that.imgName',that.imgName)
                 }).catch((err)=>{

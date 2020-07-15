@@ -44,7 +44,7 @@
             </el-form>
 
             <div>
-
+            
            
             <quill-editor ref="myQuillEditor" 
                 class="myQuillEditor"
@@ -231,7 +231,6 @@ Quill.register(video, true)
                         if (value) {
                             // 触发上传
                             document.querySelector('#video-uploader').click()
-                            console.log('触发上传视频')
                         } else {
                             this.quill.format('video', false);
                         }

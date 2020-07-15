@@ -78,20 +78,20 @@ module.exports = {
         test: /\.scss$/,
         loaders: ['style', 'css', 'sass']
       },
-      {
-        test: /\.js$/,
-        exclude: /node_modules(?!\/quill-image-drop-module|quill-image-resize-module)/,
-        loader: 'babel-loader'
-      }
+      // {
+      //   test: /\.js$/,
+      //   exclude: /node_modules(?!\/quill-image-drop-module|quill-image-resize-module)/,
+      //   loader: 'babel-loader'
+      // }
 
     ]
   },
-  plugins: [
-    new webpack.ProvidePlugin({
-      'window.Quill': 'quill/dist/quill.js',
-      'Quill': 'quill/dist/quill.js'
-    })
-  ],
+  // plugins: [
+  //   new webpack.ProvidePlugin({
+  //     'window.Quill': 'quill/dist/quill.js',
+  //     'Quill': 'quill/dist/quill.js'
+  //   })
+  // ],
 
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
