@@ -10,7 +10,7 @@
        <div class="top-title">
             <div class="titlelist">
                 <img src="../../assets/images/manege.png" alt="" height="19px" width="19px">
-                <span>用电安全</span>
+                <span>轮播图</span>
             </div>
         </div>
         <div class="manege-content">

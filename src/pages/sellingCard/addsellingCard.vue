@@ -7,36 +7,47 @@
             </div>
         </div>
         <div class="manege-content">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-                <el-form-item label="姓名" prop="cardName">
+            <el-form :model="ruleForm" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+
+                <el-form-item label="是否为分公司" >
+                <!-- 1：分公司    2：总公司 -->
+                    <el-radio v-model="ruleForm.cardStatus" label="1" @change="companyStatus($event)">是</el-radio>   
+                    <el-radio v-model="ruleForm.cardStatus" label="2" @change="companyStatus($event)">否</el-radio>
+                </el-form-item>
+
+                <el-form-item label="姓名">
                     <el-input v-model="ruleForm.cardName"></el-input>
                 </el-form-item>
 
-                <el-form-item label="公司名称" prop="cardMingcheng">
+                <el-form-item label="公司名称">
                     <el-input v-model="ruleForm.cardMingcheng"></el-input>
                 </el-form-item>
 
-                <el-form-item label="手机号" prop="cardPhone">
+                <el-form-item label="邮箱">
+                    <el-input v-model="ruleForm.cardPassword"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="!zongshow" label="座机号">
                     <el-input v-model="ruleForm.cardPhone"></el-input>
                 </el-form-item>
 
-                <el-form-item label="微信号" prop="cardVx">
+                <el-form-item v-if="zongshow" label="手机号">
+                    <el-input v-model="ruleForm.cardPhone"></el-input>
+                </el-form-item>
+
+                <el-form-item label="微信号">
                     <el-input v-model="ruleForm.cardVx"></el-input>
                 </el-form-item>
 
-                <el-form-item label="地址" prop="cardAddress">
+                <el-form-item label="地址">
                     <el-input v-model="ruleForm.cardAddress"></el-input>
                 </el-form-item>
 
-                <el-form-item label="负责区域" prop="cardResponsiblearea">
+                <el-form-item label="负责区域">
                     <el-input v-model="ruleForm.cardResponsiblearea"></el-input>
                 </el-form-item>
                 
-                <el-form-item  label="是否为分公司" prop="cardStatus">
-                <!-- 1：分公司    2：总公司 -->
-                    <el-radio v-model="ruleForm.cardStatus" label="1">是</el-radio>   
-                    <el-radio v-model="ruleForm.cardStatus" label="2">否</el-radio>
-                </el-form-item>
+                
 
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -62,32 +73,9 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                     cardAddress: '',
                     cardResponsiblearea: '',
                     cardStatus: '1',
+                    cardPassword:''
                 },
-                rules: {
-                    cardName: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' },
-                        { min: 2, max: 10, message: '长度在 2 到10 个字符', trigger: 'blur' }
-                    ],
-                    cardMingcheng: [
-                        { required: true, message: '请输入公司名称', trigger: 'blur' },
-                    ],
-                    cardPhone: [
-                        { required: true, message: '请输入手机号', trigger: 'blur' },
-                        { validator: validateMobile, trigger: 'blur' }   //手机号验证
-                    ],
-                    cardVx: [
-                        { required: true, message: '请输入微信号', trigger: 'blur' },
-                    ],
-                    cardAddress: [
-                        { required: true, message: '请输入地址', trigger: 'blur' },
-                    ],
-                    cardResponsiblearea: [
-                        { required: true, message: '请输入负责区域', trigger: 'blur' },
-                    ],
-                    cardStatus: [
-                        { required: true, message: '请选择是否为子公司', trigger: 'change' }
-                    ],
-                }
+                zongshow:false   //显示总公司的座机
             }
         },
         
@@ -98,13 +86,26 @@ import {validateMobile} from '../../assets/javascript/validate.js';
             
         },
         methods: {
+            // 总公司和分公司的手机号隐藏显示
+            companyStatus(){
+                console.log('ruleForm.cardStatus',this.ruleForm.cardStatus)
+                if(this.ruleForm.cardStatus == 1){
+                    // 座机号
+                    this.zongshow = false
+                    this.cardPhone = ''
+                }else if(this.ruleForm.cardStatus == 2){
+                    // 手机号
+                    this.zongshow = true
+                    this.cardPhone = ''
+                }
+            },
             submitForm(formName) {
                 var that = this
                 var mydata = that.ruleForm
                 console.log('mydata',mydata)
                 
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
+                // this.$refs[formName].validate((valid) => {
+                //     if (valid) {
                         // alert('submit!');
                         this.$axios({
                             url:'/businessCard/add',
@@ -128,11 +129,11 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                         .catch(function (error) {
                             
                         });
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+                    // } else {
+                    //     console.log('error submit!!');
+                    //     return false;
+                    // }
+                // });
                 
             },
             // 清除表单数据

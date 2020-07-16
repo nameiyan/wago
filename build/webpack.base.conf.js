@@ -6,6 +6,9 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
+var webpack = require('webpack');
+
+
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -13,6 +16,13 @@ function resolve (dir) {
 
 
 module.exports = {
+ // 配置插件参数
+    plugins: [
+      new webpack.ProvidePlugin({
+        'window.Quill': 'quill/dist/quill.js',
+        'Quill': 'quill/dist/quill.js'
+      })
+    ],
   context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'
@@ -78,6 +88,11 @@ module.exports = {
         test: /\.scss$/,
         loaders: ['style', 'css', 'sass']
       },
+      {
+        test: /\.js$/,
+        exclude: /node_modules(?!\/quill-image-drop-module|quill-image-resize-module)/,
+        loader: 'babel-loader'
+      }
       // {
       //   test: /\.js$/,
       //   exclude: /node_modules(?!\/quill-image-drop-module|quill-image-resize-module)/,
@@ -86,12 +101,7 @@ module.exports = {
 
     ]
   },
-  // plugins: [
-  //   new webpack.ProvidePlugin({
-  //     'window.Quill': 'quill/dist/quill.js',
-  //     'Quill': 'quill/dist/quill.js'
-  //   })
-  // ],
+  
 
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue

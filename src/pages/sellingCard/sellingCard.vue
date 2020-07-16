@@ -21,7 +21,7 @@
 
                 <div class="search">
                      <el-input class="elinput" clearable
-                        placeholder="请输入内容"
+                        placeholder="请输入负责区域关键字"
                         v-model="searchInput">
                         <i slot="prefix" class="el-input__icon el-icon-search"></i>
                     </el-input>
@@ -52,6 +52,13 @@
                 <el-table-column
                     prop="cardAddress"
                     label="公司地址"
+                    width="130"
+                    align="center">
+                </el-table-column>
+
+                <el-table-column
+                    prop="cardPassword"
+                    label="邮箱"
                     width="130"
                     align="center">
                 </el-table-column>
@@ -91,7 +98,7 @@
                     align="center">
                     
                     <template slot-scope="scope">
-                         {{ scope.row.cardStatus == '1' ? '否' : (scope.row.cardStatus == '2' ? '是' : '')}}
+                         {{ scope.row.cardStatus == 1 ? '是' : (scope.row.cardStatus == 2 ? '否' : '')}}
                     </template>
                 </el-table-column>
 
@@ -121,36 +128,47 @@
                 :visible.sync="updataVisible"
                 width="70%"
                 center>
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-                     <el-form-item label="姓名" prop="cardName">
+                <el-form :model="ruleForm" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+
+                    <el-form-item  label="是否为分公司">
+                        <!-- 1：分公司    2：总公司 -->
+                        <el-radio v-model="ruleForm.cardStatus" label="1" @change="companyStatus($event)">是</el-radio>   
+                        <el-radio v-model="ruleForm.cardStatus" label="2" @change="companyStatus($event)">否</el-radio>
+                    </el-form-item>
+
+                     <el-form-item label="姓名">
                         <el-input v-model="ruleForm.cardName"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="公司名称" prop="cardMingcheng">
+                    <el-form-item label="公司名称">
                         <el-input v-model="ruleForm.cardMingcheng"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="手机号" prop="cardPhone">
-                        <el-input v-model="ruleForm.cardPhone"></el-input>
+                    <el-form-item label="邮箱">
+                        <el-input v-model="ruleForm.cardPassword"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="微信号" prop="cardVx">
+                    <el-form-item label="座机号" v-if="!zongshow">
+                        <el-input  v-model="ruleForm.cardPhone"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="手机号" v-if="zongshow">
+                        <el-input  v-model="ruleForm.cardPhone"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="微信号">
                         <el-input v-model="ruleForm.cardVx"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="地址" prop="cardAddress">
+                    <el-form-item label="地址">
                         <el-input v-model="ruleForm.cardAddress"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="负责区域" prop="cardResponsiblearea">
+                    <el-form-item label="负责区域">
                         <el-input v-model="ruleForm.cardResponsiblearea"></el-input>
                     </el-form-item>
                 
-                <el-form-item  label="是否为分公司" prop="cardStatus">
-                    <!-- 1：分公司    2：总公司 -->
-                    <el-radio v-model="ruleForm.cardStatus" label="1">是</el-radio>   
-                    <el-radio v-model="ruleForm.cardStatus" label="2">否</el-radio>
-                </el-form-item>
+                
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
                     </el-form-item>
@@ -195,32 +213,9 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                     cardAddress: '',
                     cardResponsiblearea: '',
                     cardStatus: '1',
+                    cardPassword:''
                 },
-                rules: {
-                    cardName: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' },
-                        { min: 2, max: 10, message: '长度在 2 到10 个字符', trigger: 'blur' }
-                    ],
-                    cardMingcheng: [
-                        { required: true, message: '请输入公司名称', trigger: 'blur' },
-                    ],
-                    cardPhone: [
-                        { required: true, message: '请输入手机号', trigger: 'blur' },
-                        { validator: validateMobile, trigger: 'blur' }   //手机号验证
-                    ],
-                    cardVx: [
-                        { required: true, message: '请输入微信号', trigger: 'blur' },
-                    ],
-                    cardAddress: [
-                        { required: true, message: '请输入地址', trigger: 'blur' },
-                    ],
-                    cardResponsiblearea: [
-                        { required: true, message: '请输入负责区域', trigger: 'blur' },
-                    ],
-                    cardStatus: [
-                        { required: true, message: '请选择是否为子公司', trigger: 'change' }
-                    ],
-                }
+                zongshow:false
                 // 编辑的数据结束
             }
         },
@@ -232,7 +227,18 @@ import {validateMobile} from '../../assets/javascript/validate.js';
             this.getallcompanyCard()
         },
         methods: {
-            
+            // 总公司和分公司的手机号隐藏显示
+            companyStatus(){
+                console.log('ruleForm.cardStatus',this.ruleForm.cardStatus)
+                if(this.ruleForm.cardStatus == 1){
+                    // 座机号
+                    this.zongshow = false
+                }else if(this.ruleForm.cardStatus == 2){
+                    // 手机号
+                    this.zongshow = true
+                }
+            },
+
             // 编辑公司名片的显示
             handleEdit(index,row){
                 console.log('ssssssssss',row)
@@ -241,13 +247,13 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                 this.ruleForm.cardStatus = JSON.stringify(this.ruleForm.cardStatus)
             },
 
-            submitForm(formName) {
+            submitForm() {
                 var that = this
                 var mydata = that.ruleForm
                 console.log('mydata',mydata)
                 
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
+                // this.$refs[formName].validate((valid) => {
+                //     if (valid) {
                         // alert('submit!');
                         this.$axios({
                             url:'/businessCard/updateById',
@@ -271,11 +277,11 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                         .catch(function (error) {
                             
                         });
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+                //     } else {
+                //         console.log('error submit!!');
+                //         return false;
+                //     }
+                // });
                 
             },
             // 模糊查询
@@ -371,7 +377,6 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                 this.$axios.post('/businessCard/findZongCompany').then(function (res) {
                     console.log('总公司名片',res.data.data)
                     if(res.data.flag){
-                        console.log('2222222')
                         that.cardList = []
                         that.cardList[0] = res.data.data
                         that.cardListtotal = 1

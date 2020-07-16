@@ -61,11 +61,11 @@
                 <img id='contentPic'  :src='imgUrl'/>
                 <video id='contentVid' :src="videoUrl"></video>
             </quill-editor>
-            <el-button type="primary" @click="searchArticleName()">提交</el-button>
+            <el-button class="submitbox" type="primary" @click="searchArticleName()">提交</el-button>
 
 
 
-             <div style="display:flex;justify-content:flex-end;padding:10px 0">
+             <div class="uploadbox">
                 <input type='file' @change="update" ref='contentUpload' id='avatar-uploader' />
                 <input type='file' @change="updateVideo($event)" ref='videoUpload' id='video-uploader'/>
             </div>
@@ -115,6 +115,10 @@ Quill.register(video, true)
 // import quillConfig from '../../../config/quill-config' 
 
 
+var fonts = ['SimSun', 'SimHei','Microsoft-YaHei','KaiTi','FangSong','Arial','Times-New-Roman','sans-serif'];  
+var Font = Quill.import('formats/font');  
+Font.whitelist = fonts; //将字体加入到白名单 
+Quill.register(Font, true);
 
     export default {
         name: "ArticleEdit",
@@ -165,7 +169,7 @@ Quill.register(video, true)
             // console.log('数据',this.$store.state.articleEditData)
             this.searchArticleContent()
             // console.log(container, ImageExtend,886)
-            this.actionUrl = '/item/upload';
+            this.actionUrl = '/tryOut/upload';
             this.quillConfig = {
 			modules: {
 				ImageExtend: {  // 如果不作设置，即{}  则依然开启复制粘贴功能且以base64插入 
@@ -211,7 +215,8 @@ Quill.register(video, true)
                         [{'size': ['small', false, 'large', 'huge']}],
                         [{'header': [1, 2, 3, 4, 5, 6, false]}],
                         [{'color': []}, {'background': []}],
-                        [{'font': []}],
+                        // [{'font': []}],
+                        [{ 'font': fonts }],       //字体，把上面定义的字体数组放进来
                         [{'align': []}],
                         ['clean'],
                         ['link', 'image', 'video']
@@ -249,6 +254,70 @@ Quill.register(video, true)
             this.getAllcategorize()
         },
         methods: {
+            // 上传视频
+            updateVideo(e){
+                // console.log('触发上传视频的方法',e)
+
+                // 上传到腾讯云上
+
+                var oFile=e.target.files[0];//获取文件流
+                if (typeof (oFile) === 'undefined') {
+                    return;
+                }
+                var val= e.target.value;
+                var suffix = val.substr(val.indexOf("."));
+                var storeAs = "studio_course/" + this.timestamp() + suffix;
+                client.multipartUpload(storeAs, oFile).then(function (result) {
+
+                }).catch(function (err) {
+                    console.log(err);
+                });
+
+                let quill = this.$refs.myQuillEditor.quill;
+                const range = quill.getSelection();
+
+
+
+
+
+                // https://20200508-tvweb-1255674295.cos.ap-nanjing.myqcloud.com/
+
+                // https://fluploadvideo.oss-cn-beijing.aliyuncs.com/studio_course/20200710165506.mp4
+                this.videoUrl = "https://fluploadvideo.oss-cn-beijing.aliyuncs.com/" + storeAs
+                
+                if(range){
+                    quill.insertEmbed(range.index,'video',this.videoUrl); 
+                    // quill.insertEmbed('inserthtml', inHtml);
+                    // this.ueditor.execCommand('inserthtml', inHtml);
+                }
+                quill.setSelection(quill.getSelection().index+1)
+
+                // console.log('quill',quill.editor)
+
+
+
+
+            },
+            
+            /**
+            * 生成文件名
+            * @returns
+            */
+            timestamp(){
+                var time = new Date();
+                var y = time.getFullYear();
+                var m = time.getMonth()+1;
+                var d = time.getDate();
+                var h = time.getHours();
+                var mm = time.getMinutes();
+                var s = time.getSeconds();
+                // console.log(y);
+                return ""+y+this.add0(m)+this.add0(d)+this.add0(h)+this.add0(mm)+this.add0(s);
+            },
+            add0(m){
+                return m<10?'0'+m : m;
+            },
+
              // 查询全部分类
             getAllcategorize(){
                 var that = this
@@ -454,5 +523,13 @@ Quill.register(video, true)
     .img{
         height: 80px;
         width: 80px;
+    }
+    .uploadbox{
+        visibility: hidden;
+        display: none;
+    }
+    .submitbox{
+        margin-left: 45%;
+        margin-top: 20px;
     }
 </style>

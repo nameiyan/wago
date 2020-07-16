@@ -44,27 +44,27 @@
             </el-form>
 
             <div>
-            
            
             <quill-editor ref="myQuillEditor" 
                 class="myQuillEditor"
                 v-model="content" 
-                :options="quillConfig" >
+                :options="quillConfig" 
+                
+                >
+                <!--@change="onEditorChange($event)" -->
                 <img id='contentPic'  :src='imgUrl'/>
                 <video id='contentVid' :src="videoUrl"></video>
+                
             </quill-editor>
            
 
 
-            
-
-
-
-
             <el-button type="primary" @click="submit('ruleForm')" class="submit">提交</el-button>
             </div>
-            <input type='file' @change="update" ref='contentUpload' id='avatar-uploader'/>
-            <input type='file' @change="updateVideo($event)" ref='videoUpload' id='video-uploader'/>
+            <div class="uploadbox">
+                <input type='file' @change="update" ref='contentUpload' id='avatar-uploader'/>
+                <input type='file' @change="updateVideo($event)" ref='videoUpload' id='video-uploader'/>
+            </div>
             <!--<img class="tempimg" :src="`https://20200508-tvweb-1255674295.cos.ap-nanjing.myqcloud.com/${item.qr_code}`"> -->
         </div>
     </div>
@@ -83,28 +83,41 @@ var client = new OSS.Wrapper({
     bucket: 'fluploadvideo'
 });
 
+import { quillEditor, Quill } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-// import { quillEditor } from 'vue-quill-editor'
-import { quillEditor, Quill } from 'vue-quill-editor'
-// import { container, ImageExtend } from 'quill-image-extend-module'
 
 import { container, addQuillTitle } from 'quill-video-image-module'
 import { ImageExtend, QuillWatch } from 'quill-video-image-module/quill-image-module'
 import { VideoExtend, QuillVideoWatch } from 'quill-video-image-module/quill-video-module'
 
-// import ImageResize from 'quill-image-resize-module'
+
+// 图片拖拽上传
+import { ImageDrop } from 'quill-image-drop-module';
+
+
+//quill图片可拖拽改变大小
+// import ImageResize from 'quill-image-resize-module' // 引用，调整图片大小
+
 
 // 引入video模块并注册
 import video from 'quill-video-image-module/video'
 
+Quill.register('modules/ImageExtend', ImageExtend)
+Quill.register('modules/VideoExtend', VideoExtend)
+Quill.register('modules/imageDrop', ImageDrop);
+// Quill.register('modules/imageResize', ImageResize)
 Quill.register(video, true)
 
-//   Quill.register('modules/ImageResize', ImageResize)
-  Quill.register('modules/ImageExtend', ImageExtend)
-  Quill.register('modules/VideoExtend', VideoExtend)
-// import quillConfig from '../../../config/quill-config' 
+
+
+
+
+var fonts = ['SimSun', 'SimHei','Microsoft-YaHei','KaiTi','FangSong','Arial','Times-New-Roman','sans-serif'];  
+var Font = Quill.import('formats/font');  
+Font.whitelist = fonts; //将字体加入到白名单 
+Quill.register(Font, true);
 
 
 
@@ -119,7 +132,9 @@ Quill.register(video, true)
                 content:'',
                 imgUrl:'',   //富文本中图片的url
                 videoUrl:'',//富文本中视频的url
-                editorOption: {},
+                editorOption: {
+                   
+                },
                 quillOption: '',
                 quillConfig:{},
                 
@@ -157,86 +172,105 @@ Quill.register(video, true)
             // console.log(container, ImageExtend,886)
             this.actionUrl = '/tryOut/upload';
             this.quillConfig = {
-			modules: {
-                toolbar: {
-                     container:[
-                        ['bold', 'italic', 'underline', 'strike'],
-                        ['blockquote', 'code-block'],
-                        [{'header': 1}, {'header': 2}],
-                        [{'list': 'ordered'}, {'list': 'bullet'}],
-                        [{'script': 'sub'}, {'script': 'super'}],
-                        [{'indent': '-1'}, {'indent': '+1'}],
-                        [{'direction': 'rtl'}],
-                        [{'size': ['small', false, 'large', 'huge']}],
-                        [{'header': [1, 2, 3, 4, 5, 6, false]}],
-                        [{'color': []}, {'background': []}],
-                        [{'font': []}],
-                        [{'align': []}],
-                        ['clean'],
-                        ['link', 'image', 'video']
-                    ],
-				ImageExtend: {  // 如果不作设置，即{}  则依然开启复制粘贴功能且以base64插入 
-					name: 'imgFile',  // 图片参数名
-					size: 1,  // 可选参数 图片大小，单位为M，1M = 1024kb
-					action: this.actionUrl,  // 服务器地址, 如果action为空，则采用base64插入图片
-					// response 为一个函数用来获取服务器返回的具体图片地址
-					// 例如服务器返回{code: 200; data:{ url: 'baidu.com'}}
-					// 则 return res.data.url
-					response: (res) => {
-						return res.data.url
-					},
-					headers: (xhr) => {
-					// xhr.setRequestHeader('myHeader','myValue')
-                    },  // 可选参数 设置请求头部
-                    start: () => {}, // 可选参数 自定义开始上传触发事件
-                    end: () => {}, // 可选参数 自定义上传结束触发的事件，无论成功或者失败
-                    error: () => {}, // 可选参数 自定义网络错误触发的事件
-                    change: () => {}, // 可选参数 每次选择图片触发，也可用来设置头部，但比headers多了一个参数，可设置formData
-                    sizeError: () => {
-                        alert('图片不能大于1M')
-                    }
-                },
-                VideoExtend: {
-                    loading: true,
-                    name: 'img',
-                    size: 100, // 可选参数 视频大小，单位为M，1M = 1024kb
-                    action: 'https://fluploadvideo.oss-cn-beijing.aliyuncs.com/studio_course/', // 视频上传接口
-                    headers: (xhr) => {
-                        // set custom token(optional)
-                    },
-                    response: (res) => {
-                        // video uploaded path
-                        // custom your own
-                        return res.data.url;
-                    },
-                    sizeError: () => {
-                        alert('视频不能大于100M')
-                    }
-                },
-				 
-				handlers: {
-					'image': function (value) {  //劫持quill自身的文件上传，用原生替换
-                        if (value) {
-                            document.querySelector('#avatar-uploader').click()
-                        } else {
-                            this.quill.format('image', false);
+                placeholder:'请输入...',
+                
+                modules: {
+                    //图片拖拽上传
+                    imageDrop:true, 
+                    //在富文本中修改图片的大小  
+                   // 调整图片大小
+					// imageResize: {
+					// 	displayStyles: {
+					// 		backgroundColor: 'black',
+					// 		border: 'none',
+					// 		color: 'white'
+					// 	},
+					// 	modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+					// },
+                    toolbar: {
+                        container:[
+                            ['bold', 'italic', 'underline', 'strike'], //加粗，斜体，下划线，删除线
+                            ['blockquote', 'code-block'], //引用，代码块
+                            [{'header': 1}, {'header': 2}],// 标题，键值对的形式；1、2表示字体大小
+                            [{'list': 'ordered'}, {'list': 'bullet'}], //列表
+                            [{'script': 'sub'}, {'script': 'super'}],// 上下标
+                            [{'indent': '-1'}, {'indent': '+1'}],// 缩进
+                            [{'direction': 'rtl'}],// 文本方向
+                            [{'size': ['small', false, 'large', 'huge']}],// 字体大小
+                            [{'header': [1, 2, 3, 4, 5, 6, false]}],//几级标题
+                            [{'color': []}, {'background': []}],// 字体颜色，字体背景颜色
+                            // [{'font': []}], //字体
+                            [{ 'font': fonts }],       //字体，把上面定义的字体数组放进来
+                            [{'align': []}], //对齐方式
+                            ['clean'],//清除字体样式
+                            ['link', 'image', 'video'], //上传图片、上传视频
+                            
+                        ],
+                        
+                    ImageExtend: {  // 如果不作设置，即{}  则依然开启复制粘贴功能且以base64插入 
+                        name: 'imgFile',  // 图片参数名
+                        size: 1,  // 可选参数 图片大小，单位为M，1M = 1024kb
+                        action: this.actionUrl,  // 服务器地址, 如果action为空，则采用base64插入图片
+                        // response 为一个函数用来获取服务器返回的具体图片地址
+                        // 例如服务器返回{code: 200; data:{ url: 'baidu.com'}}
+                        // 则 return res.data.url
+                        response: (res) => {
+                            return res.data.url
+                        },
+                        headers: (xhr) => {
+                        // xhr.setRequestHeader('myHeader','myValue')
+                        },  // 可选参数 设置请求头部
+                        start: () => {}, // 可选参数 自定义开始上传触发事件
+                        end: () => {}, // 可选参数 自定义上传结束触发的事件，无论成功或者失败
+                        error: () => {}, // 可选参数 自定义网络错误触发的事件
+                        change: () => {}, // 可选参数 每次选择图片触发，也可用来设置头部，但比headers多了一个参数，可设置formData
+                        sizeError: () => {
+                            alert('图片不能大于1M')
                         }
                     },
-                    // video: function() {
-                    //     QuillVideoWatch.emit(this.quill.id)
-                    //     console.log('this.quill.id',this.quill.id)
-                    // },
-                    'video':function(value){
-                        //当点击视频上传时，value会变为true
-                        if (value) {
-                            // 触发上传
-                            document.querySelector('#video-uploader').click()
-                        } else {
-                            this.quill.format('video', false);
+                    VideoExtend: {
+                        loading: true,
+                        name: 'img',
+                        size: 100, // 可选参数 视频大小，单位为M，1M = 1024kb
+                        action: 'https://fluploadvideo.oss-cn-beijing.aliyuncs.com/studio_course/', // 视频上传接口
+                        headers: (xhr) => {
+                            // set custom token(optional)
+                        },
+                        response: (res) => {
+                            // video uploaded path
+                            // custom your own
+                            return res.data.url;
+                        },
+                        sizeError: () => {
+                            alert('视频不能大于100M')
                         }
-                    }
-				}
-				}
+                    },
+                    
+                    handlers: {
+                        'image': function (value) {  //劫持quill自身的文件上传，用原生替换
+                            if (value) {
+                                document.querySelector('#avatar-uploader').click()
+                            } else {
+                                this.quill.format('image', false);
+                            }
+                        },
+                        // video: function() {
+                        //     QuillVideoWatch.emit(this.quill.id)
+                        //     console.log('this.quill.id',this.quill.id)
+                        // },
+                        'video':function(value){
+                            //当点击视频上传时，value会变为true
+                            if (value) {
+                                // 触发上传
+                                document.querySelector('#video-uploader').click()
+                            } else {
+                                this.quill.format('video', false);
+                            }
+                        }
+                    },
+                    
+                },
+               
 			}
 		}
         },
@@ -244,7 +278,9 @@ Quill.register(video, true)
             this.getAllcategorize()
         },
         methods: {
-            
+            onEditorChange(){
+                console.log('this.content',this.content)
+            },
             /**
             * 生成文件名
             * @returns
@@ -257,7 +293,7 @@ Quill.register(video, true)
                 var h = time.getHours();
                 var mm = time.getMinutes();
                 var s = time.getSeconds();
-                console.log(y);
+                // console.log(y);
                 return ""+y+this.add0(m)+this.add0(d)+this.add0(h)+this.add0(mm)+this.add0(s);
             },
             add0(m){
@@ -267,7 +303,7 @@ Quill.register(video, true)
 
             // 上传视频
             updateVideo(e){
-                console.log('触发上传视频的方法',e)
+                // console.log('触发上传视频的方法',e)
 
                 // 上传到腾讯云上
 
@@ -277,9 +313,7 @@ Quill.register(video, true)
                 }
                 var val= e.target.value;
                 var suffix = val.substr(val.indexOf("."));
-                console.log('suffix',suffix)
                 var storeAs = "studio_course/" + this.timestamp() + suffix;
-                console.log('storeAs',storeAs)
                 client.multipartUpload(storeAs, oFile).then(function (result) {
 
                 }).catch(function (err) {
@@ -287,21 +321,25 @@ Quill.register(video, true)
                 });
 
                 let quill = this.$refs.myQuillEditor.quill;
-                console.log(this.$refs.myQuillEditor,145)
                 const range = quill.getSelection();
+
+
+
+
 
                 // https://20200508-tvweb-1255674295.cos.ap-nanjing.myqcloud.com/
 
                 // https://fluploadvideo.oss-cn-beijing.aliyuncs.com/studio_course/20200710165506.mp4
                 this.videoUrl = "https://fluploadvideo.oss-cn-beijing.aliyuncs.com/" + storeAs
-                console.log('this.videoUrl',this.videoUrl)
                 if(range){
                     quill.insertEmbed(range.index,'video',this.videoUrl); 
+                    // quill.insertEmbed('inserthtml', inHtml);
+                    // this.ueditor.execCommand('inserthtml', inHtml);
                 }
                 quill.setSelection(quill.getSelection().index+1)
 
+                // console.log('quill',quill.editor)
 
-               
 
 
 
@@ -310,7 +348,7 @@ Quill.register(video, true)
             // quill   上传图片
             update(){
                 
-                console.log('9999999999999999999999999999999999')
+                // console.log('9999999999999999999999999999999999')
 
                 let inputDOM = this.$refs.contentUpload;
                 this.file = inputDOM.files[0];
@@ -327,7 +365,7 @@ Quill.register(video, true)
                     headers: {'content-Type':'multipart/form-data'}
                 }).then((re)=>{
 
-                    console.log('re.data.data.url',re.data.data)
+                    // console.log('图片返回数据',re.data.data)
                     
                     that.imgUrl = re.data.data.url
                     // console.log(this.imgUrl )
@@ -338,7 +376,6 @@ Quill.register(video, true)
                     }  
                     quill.setSelection(quill.getSelection().index+1)
 
-                    
                 }).catch((err)=>{
                     console.log(err)
                 })
@@ -355,7 +392,7 @@ Quill.register(video, true)
                     method: 'post',
                     data: mydata,
                 }).then((res)=>{
-                    console.log('查询分类',res.data.data.list)
+                    // console.log('查询分类',res.data.data.list)
                     that.options = res.data.data.list
                 }).catch((err)=>{
                     console.log(err)
@@ -391,7 +428,7 @@ Quill.register(video, true)
                     headers: {'content-Type':'multipart/form-data'}
                 }).then((re)=>{
                     that.imgName = re.data.data.url
-                    console.log('that.imgName',that.imgName)
+                    // console.log('that.imgName',that.imgName)
                 }).catch((err)=>{
                     console.log(err)
                 })
@@ -414,13 +451,13 @@ Quill.register(video, true)
                     subtitle:that.ruleForm.subtitle,
                     safetyContent:JSON.stringify(this.$refs.myQuillEditor.value),
                     url:that.imgName,
-                    typeid:'123',
+                    typeid:that.ruleForm.value,
                     quan:that.ruleForm.quan,
                     views:'',
                     createTime:timestamp
                 }
 
-                console.log('content',content)
+                // console.log('content',content)
 
                  this.$refs[ruleForm].validate((valid) => {
                     if (valid) {
@@ -461,6 +498,7 @@ Quill.register(video, true)
     }
 </script>
 <style>
+@import '../general/font';
    .el-scrollbar_wrap{
        overflow-x: hidden;
    }
@@ -490,6 +528,11 @@ Quill.register(video, true)
         width: 80px;
     }
     .submit{
-        margin: 20px 50%;
+        margin: 20px 45%;
     }
+    .uploadbox{
+        visibility: hidden;
+        display:none;
+    }
+
 </style>

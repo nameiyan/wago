@@ -109,6 +109,7 @@
 <script>
     export default {
         name: "Articletype",
+        inject:['reload'],
         data(){
             return{
                 tableData: [],   //查看用电类型的数据列表
@@ -116,12 +117,13 @@
                 nowpageSize: 15,
                 total:null,
                 checkarticlevisible:false,   //编辑弹框的删除
+                originRowData:[],    //编辑的初始数据
                 ruleForm:[],    ////编辑弹框的数据
                 rules: {
                     typeName: [
                         { required: true, message: '请输入类型', trigger: 'blur' }
                     ],
-                   
+                    
                 },
                 imgsback: [],      // 图片预览地址
                 imgfilesback: [],  // 图片原文件，上传到后台的数据
@@ -139,57 +141,79 @@
         methods: {
             // 编辑的数据提交
             editsubmit:function(){
-                console.log('编辑的数据提交',this.ruleForm)
-                this.ruleForm.typeUrl = this.imgName
+                console.log('提交',this.ruleForm)
+                console.log('编辑的初始数据',this.originRowData)
+                this.ruleForm.typeUrl = this.imgName == '' ? this.originRowData.typeUrl : this.imgName
                 var that = this;
                 var param = this.ruleForm;
 
-                this.$axios({
-                   url:'/type/update',
-                   data:param,
-                   method:'post'
-                }).then(function (res) {
-                    console.log('res',res)
-                    if(res.data.flag){
-                        that.$message.success('修改成功！')
-                        that.$router.push({name:'Articletype'})
-                    }
-                })
-                .catch(function (error) {
+                console.log('param',param)
 
-                 });
+
+                if(param.typeName == ''){
+                    that.$message.error('请输入类型名称')
+                }else if(param.typeUrl == ''){
+                    that.$message.success('请上传图片')
+                }else{
+                    this.$axios({
+                        url:'/type/update',
+                        data:param,
+                        method:'post'
+                    }).then(function (res) {
+                        console.log('res',res)
+                        if(res.data.flag){
+                            that.$message.success('修改成功！')
+                            that.reload()
+                        }
+                     })
+                       .catch(function (error) {
+                      });
+                }
+
+                
             },
             // 上传图片与预览
             /* 图片上传 */
             fileChangeback(e) {  // 加入图片
-                // 图片预览部分
+                
                 var that = this
-                var event = event || window.event;
-                var file = event.target.files
-                var leng=file.length;
-                for(var i=0;i<leng;i++){
-                    var reader = new FileReader();    // 使用 FileReader 来获取图片路径及预览效果
-                    that.imgfilesback.push(file[i])
-                    reader.readAsDataURL(file[i]); 
-                    reader.onload =function(e){
-                    that.imgsback.push(e.target.result);   // base 64 图片地址形成预览                                 
-                    };                 
-                }
 
                 // 图片上传给后台部分
                 var file = that.imgfilesback[0];
                 let form = new FormData(); 
                 form.append('imgFile',file);
-                console.log('form',form)
+                // console.log('form',form)
+
                 this.$axios({
                     url: '/tryOut/upload',
                     method: 'post',
                     data: form,
                     headers: {'content-Type':'multipart/form-data'}
                 }).then((re)=>{
-                    that.imgName = re.data.data.url
-                    console.log('that.imgName',that.imgName)
-                    that.imgshow = false
+
+                    if(re.data.flag){
+                         // 图片预览部分
+                        var event = event || window.event;
+                        var file = event.target.files
+                        var leng=file.length;
+                        for(var i=0;i<leng;i++){
+                            var reader = new FileReader();    // 使用 FileReader 来获取图片路径及预览效果
+                            that.imgfilesback.push(file[i])
+                            reader.readAsDataURL(file[i]); 
+                            reader.onload =function(e){
+                            that.imgsback.push(e.target.result);   // base 64 图片地址形成预览                                 
+                            };                 
+                        }
+
+
+                        that.imgName = re.data.data.url
+                        console.log('re.data',re.data)
+
+                        that.imgshow = false
+                    }else{
+                        that.$message.error(re.data.message)
+                    }
+                   
                 }).catch((err)=>{
                     console.log(err)
                 })
@@ -202,13 +226,14 @@
             },
             // 编辑弹框
             handleEdit:function(index,row){
-                console.log('row',row)
+                console.log('编辑的信息',row)
                 this.checkarticlevisible = true
                 this.ruleForm = row
+                this.originRowData = row
             },
             // 添加用电安全类型
             addType:function(){
-                console.log('添加')
+                // console.log('添加')
                 this.$router.push({name: 'AddArticletype'});
             },
             // 查询全部用电安全类型

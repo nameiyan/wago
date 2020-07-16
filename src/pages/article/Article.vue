@@ -17,7 +17,7 @@
             <div class="search" >
                <div>
                    <el-input style="height:50px;width:180px;margin:20px"
-                        placeholder="请输入查询文章名称"
+                        placeholder="请输入文章名称"
                         v-model=" unclearSearch"
                         clearable>
                     </el-input>
@@ -226,7 +226,7 @@ import CheckArticle from './CheckArticle.vue'
             },
              // 分页的页数
             changePage(page) {
-                 console.log('page',page)
+                //  console.log('page',page)
                 this.nowpage = page;
                 this.requireArticle();
             },
