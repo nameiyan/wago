@@ -501,6 +501,7 @@ Quill.register(Font, true);
    }
    .ql-container{
         height: 700px !important;
+        color:black
     }
 </style>
 <style scoped>

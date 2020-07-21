@@ -96,6 +96,8 @@ import { VideoExtend, QuillVideoWatch } from 'quill-video-image-module/quill-vid
 // 图片拖拽上传
 import { ImageDrop } from 'quill-image-drop-module';
 
+import ImageResize from 'quill-image-resize-module'
+Quill.register('modules/imageResize', ImageResize)
 
 //quill图片可拖拽改变大小
 // import ImageResize from 'quill-image-resize-module' // 引用，调整图片大小
@@ -111,13 +113,79 @@ Quill.register('modules/imageDrop', ImageDrop);
 Quill.register(video, true)
 
 
+//  import Quill from 'quill' 
+//  let Parchment = Quill.import('parchment');
+// // 设置行高为style 设置为class回显富文本时会失效   // class lineHeightAttributor
+// extends Parchment.Attributor.Attribute {}  // Attribute // class
+// lineHeightAttributor extends Parchment.Attributor.Class {}  // Class
+// class lineHeightAttributor extends Parchment.Attributor.Style {}   //   tyle
+   
+   
+   
+//    let lineHeight = new lineHeightAttributor('lineHeight',
+//    'line-height', {
+//        scope: Parchment.Scope.INLINE,
+//        whitelist: ['1', '1.1','1.2','1.3','1.4','1.5','1.6','1.7','1.8','1.9','2','2.1','2.2','2.3','2.4','2.5','2.6','2.7','2.8','2.9','3']
+//    }); Quill.register({ "formats/lineHeight": lineHeight }, true);
+//    export default lineHeight;
 
 
 
+
+
+// 配置编辑器的字体
 var fonts = ['SimSun', 'SimHei','Microsoft-YaHei','KaiTi','FangSong','Arial','Times-New-Roman','sans-serif'];  
 var Font = Quill.import('formats/font');  
 Font.whitelist = fonts; //将字体加入到白名单 
 Quill.register(Font, true);
+
+// 引入富文本编辑栏的title提示
+ // 标题
+       const titleConfig=[
+		    {Choice:'.ql-bold',title:'加粗'},
+		    {Choice:'.ql-italic',title:'斜体'},
+		    {Choice:'.ql-underline',title:'下划线'},
+		    {Choice:'.ql-header',title:'段落格式'},
+		    {Choice:'.ql-strike',title:'删除线'},
+		    {Choice:'.ql-blockquote',title:'块引用'},
+		    {Choice:'.ql-code',title:'插入代码'},
+		    {Choice:'.ql-code-block',title:'插入代码段'},
+		    {Choice:'.ql-font',title:'字体'},
+		    {Choice:'.ql-size',title:'字体大小'},
+		    {Choice:'.ql-list[value="ordered"]',title:'编号列表'},
+		    {Choice:'.ql-list[value="bullet"]',title:'项目列表'},
+		    {Choice:'.ql-direction',title:'文本方向'},
+		    {Choice:'.ql-header[value="1"]',title:'h1'},
+		    {Choice:'.ql-header[value="2"]',title:'h2'},
+		    {Choice:'.ql-align',title:'对齐方式'},
+		    {Choice:'.ql-color',title:'字体颜色'},
+		    {Choice:'.ql-background',title:'背景颜色'},
+		    {Choice:'.ql-image',title:'图像'},
+		    {Choice:'.ql-video',title:'视频'},
+		    {Choice:'.ql-link',title:'添加链接'},
+		    {Choice:'.ql-formula',title:'插入公式'},
+		    {Choice:'.ql-clean',title:'清除字体格式'},
+		    {Choice:'.ql-script[value="sub"]',title:'下标'},
+		    {Choice:'.ql-script[value="super"]',title:'上标'},
+		    {Choice:'.ql-indent[value="-1"]',title:'向左缩进'},
+		    {Choice:'.ql-indent[value="+1"]',title:'向右缩进'},
+		    {Choice:'.ql-header .ql-picker-label',title:'标题大小'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="1"]',title:'标题一'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="2"]',title:'标题二'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="3"]',title:'标题三'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="4"]',title:'标题四'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="5"]',title:'标题五'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="6"]',title:'标题六'},
+		    {Choice:'.ql-header .ql-picker-item:last-child',title:'标准'},
+		    {Choice:'.ql-size .ql-picker-item[data-value="small"]',title:'小号'},
+		    {Choice:'.ql-size .ql-picker-item[data-value="large"]',title:'大号'},
+		    {Choice:'.ql-size .ql-picker-item[data-value="huge"]',title:'超大号'},
+		    {Choice:'.ql-size .ql-picker-item:nth-child(2)',title:'标准'},
+		    {Choice:'.ql-align .ql-picker-item:first-child',title:'居左对齐'},
+		    {Choice:'.ql-align .ql-picker-item[data-value="center"]',title:'居中对齐'},
+		    {Choice:'.ql-align .ql-picker-item[data-value="right"]',title:'居右对齐'},
+		    {Choice:'.ql-align .ql-picker-item[data-value="justify"]',title:'两端对齐'}
+		];
 
 
 
@@ -177,6 +245,7 @@ Quill.register(Font, true);
                 modules: {
                     //图片拖拽上传
                     imageDrop:true, 
+                    imageResize: {},
                     //在富文本中修改图片的大小  
                    // 调整图片大小
 					// imageResize: {
@@ -196,7 +265,8 @@ Quill.register(Font, true);
                             [{'script': 'sub'}, {'script': 'super'}],// 上下标
                             [{'indent': '-1'}, {'indent': '+1'}],// 缩进
                             [{'direction': 'rtl'}],// 文本方向
-                            [{'size': ['small', false, 'large', 'huge']}],// 字体大小
+                            [{'size':  ['10px', '12px', '14px', '16px' ,'18px', '20px', '22px', '24px', '26px', '32px', '48px']}],// 字体大小
+                            // [{'size': fontSizeStyle.whitelist}],// 字体大小
                             [{'header': [1, 2, 3, 4, 5, 6, false]}],//几级标题
                             [{'color': []}, {'background': []}],// 字体颜色，字体背景颜色
                             // [{'font': []}], //字体
@@ -275,6 +345,14 @@ Quill.register(Font, true);
 		}
         },
         mounted:function(){
+            autotip:{
+			      document.getElementsByClassName('ql-editor')[0].dataset.placeholder=''
+			      for(let item of titleConfig){
+			          let tip = document.querySelector('.quill-editor '+ item.Choice)
+			          if (!tip) continue
+			          tip.setAttribute('title',item.title)
+			      }
+			  }
             this.getAllcategorize()
         },
         methods: {
@@ -534,5 +612,10 @@ Quill.register(Font, true);
         visibility: hidden;
         display:none;
     }
+    .myQuillEditor{
+        overflow: hidden;
+    }
+
+
 
 </style>

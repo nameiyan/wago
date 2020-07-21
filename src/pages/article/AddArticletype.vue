@@ -97,9 +97,24 @@
                // 上传图片与预览
             /* 图片上传 */
             fileChangeback(e) {  // 加入图片
+            console.log('111111111111111')
+                // 图片预览部分
                 var that = this
+                var event = event || window.event;
+                var file = event.target.files
+                var leng=file.length;
+                for(var i=0;i<leng;i++){
+                    var reader = new FileReader();    // 使用 FileReader 来获取图片路径及预览效果
+                    that.imgfilesback.push(file[i])
+                    reader.readAsDataURL(file[i]); 
+                    reader.onload =function(e){
+                    that.imgsback.push(e.target.result);   // base 64 图片地址形成预览                                 
+                    };                 
+                }
 
-                // 图片上传给后台部分
+
+
+                 // 图片上传给后台部分
                 var file = that.imgfilesback[0];
                 let form = new FormData(); 
                 form.append('imgFile',file);
@@ -110,26 +125,9 @@
                     data: form,
                     headers: {'content-Type':'multipart/form-data'}
                 }).then((re)=>{
-                    if(re.data.flag){
-                        // 图片预览部分
-                        var event = event || window.event;
-                        var file = event.target.files
-                        var leng=file.length;
-                        for(var i=0;i<leng;i++){
-                            var reader = new FileReader();    // 使用 FileReader 来获取图片路径及预览效果
-                            that.imgfilesback.push(file[i])
-                            reader.readAsDataURL(file[i]); 
-                            reader.onload =function(e){
-                            that.imgsback.push(e.target.result);   // base 64 图片地址形成预览                                 
-                            };                 
-                        }
-
-                        that.imgName = re.data.data.url
-                        console.log('that.imgName',that.imgName)
-                    }else{
-                        that.$message.error(re.data.message)
-                    }
-                    
+                    that.imgName = re.data.data.url
+                    console.log('that.imgName',that.imgName)
+                    that.$message.success('图片上传成功')
                 }).catch((err)=>{
                     console.log(err)
                 })
