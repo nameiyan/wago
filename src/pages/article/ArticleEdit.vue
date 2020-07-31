@@ -102,7 +102,11 @@ import { container, addQuillTitle } from 'quill-video-image-module'
 import { ImageExtend, QuillWatch } from 'quill-video-image-module/quill-image-module'
 import { VideoExtend, QuillVideoWatch } from 'quill-video-image-module/quill-video-module'
 
-// import ImageResize from 'quill-image-resize-module'
+// 图片拖拽上传
+// import { ImageDrop } from 'quill-image-drop-module';
+
+import ImageResize from 'quill-image-resize-module'
+Quill.register('modules/imageResize', ImageResize)
 
 // 引入video模块并注册
 import video from 'quill-video-image-module/video'
@@ -114,11 +118,62 @@ Quill.register(video, true)
   Quill.register('modules/VideoExtend', VideoExtend)
 // import quillConfig from '../../../config/quill-config' 
 
-
+// 配置编辑器的字体
 var fonts = ['SimSun', 'SimHei','Microsoft-YaHei','KaiTi','FangSong','Arial','Times-New-Roman','sans-serif'];  
 var Font = Quill.import('formats/font');  
 Font.whitelist = fonts; //将字体加入到白名单 
 Quill.register(Font, true);
+
+
+// 引入富文本编辑栏的title提示
+ // 标题
+       const titleConfig=[
+		    {Choice:'.ql-bold',title:'加粗'},
+		    {Choice:'.ql-italic',title:'斜体'},
+		    {Choice:'.ql-underline',title:'下划线'},
+		    {Choice:'.ql-header',title:'段落格式'},
+		    {Choice:'.ql-strike',title:'删除线'},
+		    {Choice:'.ql-blockquote',title:'块引用'},
+		    {Choice:'.ql-code',title:'插入代码'},
+		    {Choice:'.ql-code-block',title:'插入代码段'},
+		    {Choice:'.ql-font',title:'字体'},
+		    {Choice:'.ql-size',title:'字体大小'},
+		    {Choice:'.ql-list[value="ordered"]',title:'编号列表'},
+		    {Choice:'.ql-list[value="bullet"]',title:'项目列表'},
+		    {Choice:'.ql-direction',title:'文本方向'},
+		    {Choice:'.ql-header[value="1"]',title:'h1'},
+		    {Choice:'.ql-header[value="2"]',title:'h2'},
+		    {Choice:'.ql-align',title:'对齐方式'},
+		    {Choice:'.ql-color',title:'字体颜色'},
+		    {Choice:'.ql-background',title:'背景颜色'},
+		    {Choice:'.ql-image',title:'图像'},
+		    {Choice:'.ql-video',title:'视频'},
+		    {Choice:'.ql-link',title:'添加链接'},
+		    {Choice:'.ql-formula',title:'插入公式'},
+		    {Choice:'.ql-clean',title:'清除字体格式'},
+		    {Choice:'.ql-script[value="sub"]',title:'下标'},
+		    {Choice:'.ql-script[value="super"]',title:'上标'},
+		    {Choice:'.ql-indent[value="-1"]',title:'向左缩进'},
+		    {Choice:'.ql-indent[value="+1"]',title:'向右缩进'},
+		    {Choice:'.ql-header .ql-picker-label',title:'标题大小'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="1"]',title:'标题一'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="2"]',title:'标题二'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="3"]',title:'标题三'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="4"]',title:'标题四'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="5"]',title:'标题五'},
+		    {Choice:'.ql-header .ql-picker-item[data-value="6"]',title:'标题六'},
+		    {Choice:'.ql-header .ql-picker-item:last-child',title:'标准'},
+		    {Choice:'.ql-size .ql-picker-item[data-value="small"]',title:'小号'},
+		    {Choice:'.ql-size .ql-picker-item[data-value="large"]',title:'大号'},
+		    {Choice:'.ql-size .ql-picker-item[data-value="huge"]',title:'超大号'},
+		    {Choice:'.ql-size .ql-picker-item:nth-child(2)',title:'标准'},
+		    {Choice:'.ql-align .ql-picker-item:first-child',title:'居左对齐'},
+		    {Choice:'.ql-align .ql-picker-item[data-value="center"]',title:'居中对齐'},
+		    {Choice:'.ql-align .ql-picker-item[data-value="right"]',title:'居右对齐'},
+		    {Choice:'.ql-align .ql-picker-item[data-value="justify"]',title:'两端对齐'}
+		];
+
+
 
     export default {
         name: "ArticleEdit",
@@ -172,6 +227,9 @@ Quill.register(Font, true);
             this.actionUrl = '/tryOut/upload';
             this.quillConfig = {
 			modules: {
+                //图片拖拽上传
+                // imageDrop:true, 
+                imageResize: {},
 				ImageExtend: {  // 如果不作设置，即{}  则依然开启复制粘贴功能且以base64插入 
 					name: 'imgFile',  // 图片参数名
 					size: 1,  // 可选参数 图片大小，单位为M，1M = 1024kb
@@ -205,21 +263,23 @@ Quill.register(Font, true);
                 },
 				 toolbar: {
                      container:[
-                        ['bold', 'italic', 'underline', 'strike'],
-                        ['blockquote', 'code-block'],
-                        [{'header': 1}, {'header': 2}],
-                        [{'list': 'ordered'}, {'list': 'bullet'}],
-                        [{'script': 'sub'}, {'script': 'super'}],
-                        [{'indent': '-1'}, {'indent': '+1'}],
-                        [{'direction': 'rtl'}],
-                        [{'size': ['small', false, 'large', 'huge']}],
-                        [{'header': [1, 2, 3, 4, 5, 6, false]}],
-                        [{'color': []}, {'background': []}],
-                        // [{'font': []}],
-                        [{ 'font': fonts }],       //字体，把上面定义的字体数组放进来
-                        [{'align': []}],
-                        ['clean'],
-                        ['link', 'image', 'video']
+                        ['bold', 'italic', 'underline', 'strike'], //加粗，斜体，下划线，删除线
+                            ['blockquote', 'code-block'], //引用，代码块
+                            [{'header': 1}, {'header': 2}],// 标题，键值对的形式；1、2表示字体大小
+                            [{'list': 'ordered'}, {'list': 'bullet'}], //列表
+                            [{'script': 'sub'}, {'script': 'super'}],// 上下标
+                            [{'indent': '-1'}, {'indent': '+1'}],// 缩进
+                            [{'direction': 'rtl'}],// 文本方向
+                            [{'size':  ['10px', '12px', '14px', '16px' ,'18px', '20px', '22px', '24px', '26px', '32px', '48px']}],// 字体大小
+                            // [{'size': fontSizeStyle.whitelist}],// 字体大小
+                            [{'header': [1, 2, 3, 4, 5, 6, false]}],//几级标题
+                            [{'color': []}, {'background': []}],// 字体颜色，字体背景颜色
+                            // [{'font': []}], //字体
+                            [{ 'font': fonts }],       //字体，把上面定义的字体数组放进来
+                            [{'align': []}], //对齐方式
+                            ['clean'],//清除字体样式
+                            ['link', 'image', 'video'], //上传图片、上传视频
+                            
                     ],
 					handlers: {
 						'image': function (value) {  //劫持quill自身的文件上传，用原生替换
@@ -251,6 +311,14 @@ Quill.register(Font, true);
             
         },
         mounted(){
+             autotip:{
+			      document.getElementsByClassName('ql-editor')[0].dataset.placeholder=''
+			      for(let item of titleConfig){
+			          let tip = document.querySelector('.quill-editor '+ item.Choice)
+			          if (!tip) continue
+			          tip.setAttribute('title',item.title)
+			      }
+			  }
             this.getAllcategorize()
         },
         methods: {
@@ -349,13 +417,11 @@ Quill.register(Font, true);
                         id:myid
                     }
                 }).then((res)=>{
-                    console.log('res',res)
                     if(res.data.flag){
                         that.ruleForm = res.data.data;
                         that.content = JSON.parse(res.data.data.safetyContent)
                     }
                     
-                    console.log('re.data.data',re.data.data)
                 }).catch((err)=>{
                     console.log(err)
                 })
@@ -500,9 +566,19 @@ Quill.register(Font, true);
        overflow-x: hidden;
    }
    .ql-container{
-        height: 700px !important;
+         /* height: 700px !important; */
         color:black
     }
+        .ql-toolbar.ql-snow{
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .ql-editor{
+        height:800px;
+        overflow-y: auto;
+    }
+
 </style>
 <style scoped>
 
@@ -532,5 +608,10 @@ Quill.register(Font, true);
     .submitbox{
         margin-left: 45%;
         margin-top: 20px;
+    }
+    .myQuillEditor{
+        padding-top:60px;
+        overflow: hidden;
+        position: relative;
     }
 </style>

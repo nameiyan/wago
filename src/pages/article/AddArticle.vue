@@ -59,12 +59,13 @@
            
 
 
-            <el-button type="primary" @click="submit('ruleForm')" class="submit">提交</el-button>
+            
             </div>
             <div class="uploadbox">
                 <input type='file' @change="update" ref='contentUpload' id='avatar-uploader'/>
                 <input type='file' @change="updateVideo($event)" ref='videoUpload' id='video-uploader'/>
             </div>
+            <el-button type="primary" @click="submit('ruleForm')" class="submit">提交</el-button>
             <!--<img class="tempimg" :src="`https://20200508-tvweb-1255674295.cos.ap-nanjing.myqcloud.com/${item.qr_code}`"> -->
         </div>
     </div>
@@ -94,7 +95,7 @@ import { VideoExtend, QuillVideoWatch } from 'quill-video-image-module/quill-vid
 
 
 // 图片拖拽上传
-import { ImageDrop } from 'quill-image-drop-module';
+// import { ImageDrop } from 'quill-image-drop-module';
 
 import ImageResize from 'quill-image-resize-module'
 Quill.register('modules/imageResize', ImageResize)
@@ -108,7 +109,7 @@ import video from 'quill-video-image-module/video'
 
 Quill.register('modules/ImageExtend', ImageExtend)
 Quill.register('modules/VideoExtend', VideoExtend)
-Quill.register('modules/imageDrop', ImageDrop);
+// Quill.register('modules/imageDrop', ImageDrop);
 // Quill.register('modules/imageResize', ImageResize)
 Quill.register(video, true)
 
@@ -244,7 +245,7 @@ Quill.register(Font, true);
                 
                 modules: {
                     //图片拖拽上传
-                    imageDrop:true, 
+                    // imageDrop:true, 
                     imageResize: {},
                     //在富文本中修改图片的大小  
                    // 调整图片大小
@@ -581,7 +582,23 @@ Quill.register(Font, true);
        overflow-x: hidden;
    }
    .ql-container{
-        height: 700px !important;
+        color:black
+    }
+    .el-scrollbar_wrap{
+       overflow-x: hidden;
+   }
+   .ql-container{
+         /* height: 700px !important; */
+        color:black
+    }
+        .ql-toolbar.ql-snow{
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .ql-editor{
+        height:800px;
+        overflow-y: auto;
     }
 </style>
 <style scoped>
@@ -606,16 +623,15 @@ Quill.register(Font, true);
         width: 80px;
     }
     .submit{
-        margin: 20px 45%;
+        margin: 35px 45%;
     }
     .uploadbox{
         visibility: hidden;
         display:none;
     }
-    .myQuillEditor{
+     .myQuillEditor{
+        padding-top:60px;
         overflow: hidden;
+        position: relative;
     }
-
-
-
 </style>

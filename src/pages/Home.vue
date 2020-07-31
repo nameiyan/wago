@@ -28,7 +28,7 @@
                                     添加销售名片
                                 </el-menu-item>
                             </el-submenu>
-                        <!-- 商品管理 
+                        <!-- 商品管理 -->
                             <el-submenu index="2">
                                 <template slot="title"><span>商品管理</span></template>
                                 <el-menu-item index="2-1"  @click="goTo('/home/GoodsManage')">
@@ -37,7 +37,7 @@
                                 <el-menu-item index="2-2" @click="goTo('/home/AddGoods')">
                                     <i class="el-icon-shopping-cart-full"></i>添加商品
                                 </el-menu-item>
-                            </el-submenu>-->
+                            </el-submenu>
                          <!-- 文章管理 -->
                             <el-submenu index="3">
                                 <template slot="title"><span>用电安全</span></template>

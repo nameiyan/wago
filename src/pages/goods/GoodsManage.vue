@@ -257,10 +257,7 @@ export default {
       // console.log('value',value)
       var date = new Date(value);
       var Y = date.getFullYear() + "-";
-      var M =
-        (date.getMonth() + 1 < 10
-          ? "0" + (date.getMonth() + 1)
-          : date.getMonth() + 1) + "-";
+      var M = (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1) + "-";
       var D = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
       var time = Y + M + D;
       return time;

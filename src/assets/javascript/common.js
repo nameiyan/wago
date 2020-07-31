@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {post, fetch, patch, put} from '@/http/http.js'
-axios.defaults.baseURL = "http://192.168.3.40:8080/wago"
-// axios.defaults.baseURL = "https://fly.hemajia.net/wago"
+// axios.defaults.baseURL = "http://192.168.3.40:8080/wago"
+axios.defaults.baseURL = "https://fly.hemajia.net/wago"
 
 export default {
     install(Vue, options) {
