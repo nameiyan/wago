@@ -181,6 +181,25 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
+                // 管理者管理  manager
+                {
+                    path: '/home/manager/manager',
+                    name: 'manager',
+                    component: resolve => require(['@/pages/manager/manager'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
+                // 规则说明管理  rules
+                {
+                    path: '/home/rules/rules',
+                    name: 'rules',
+                    component: resolve => require(['@/pages/rules/rules'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
+
                 // 留言管理MessageManage
                 {
                     path: '/home/MessageManage',

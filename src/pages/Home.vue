@@ -64,6 +64,8 @@
                                 </el-menu-item>
                                 
                             </el-submenu>
+                            
+                        
                         <!-- 订单管理 
                             <el-submenu index="4">
                                 <template slot="title"><span>订单管理</span></template>
@@ -74,22 +76,37 @@
                                     <i class="el-icon-reading"></i>添加订单
                                 </el-menu-item>
                             </el-submenu>-->
-                        <!-- 留言管理 
-                            <el-submenu index="5">
-                                <template slot="title"><span>意见反馈</span></template>
-                                <el-menu-item index="5-1" @click="goTo('/home/MessageManage')">
-                                    <i class="el-icon-reading"></i>意见反馈
-                                </el-menu-item>
-                                <el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
-                                    <i class="el-icon-reading"></i>添加意见反馈
-                                </el-menu-item>
-                            </el-submenu>-->
+                      
                          <!--     积分管理   pointManagement    -->
                             <el-submenu index="6">
                                 <template slot="title"><span>积分管理</span></template>
                                 <el-menu-item index="6-1" @click="goTo('/home/pointManagement')">
                                     <i class="el-icon-reading"></i>积分查询
                                 </el-menu-item>
+                            </el-submenu>
+                        <!-- 管理者管理 manager-->
+                            <el-submenu index="7">
+                                <template slot="title"><span>管理者管理</span></template>
+                                <el-menu-item index="7-1" @click="goTo('/home/manager/manager')">
+                                    <i class="el-icon-reading"></i>管理者管理
+                                </el-menu-item>
+                            </el-submenu>
+                        <!-- 规则说明管理 rules-->
+                            <el-submenu index="8">
+                                <template slot="title"><span>规则说明管理</span></template>
+                                <el-menu-item index="8-1" @click="goTo('/home/rules/rules')">
+                                    <i class="el-icon-reading"></i>规则说明管理
+                                </el-menu-item>
+                            </el-submenu>
+                          <!-- 留言管理 -->
+                            <el-submenu index="9">
+                                <template slot="title"><span>留言管理</span></template>
+                                <el-menu-item index="9-1" @click="goTo('/home/MessageManage')">
+                                    <i class="el-icon-reading"></i>留言管理
+                                </el-menu-item>
+                                <!--<el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
+                                    <i class="el-icon-reading"></i>添加意见反馈
+                                </el-menu-item>   -->
                             </el-submenu>
                         <!-- 权限管理 -->
                             <!-- <el-submenu index="1">

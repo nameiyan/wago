@@ -33,7 +33,7 @@
                 </div>
                     
                 <el-button class="hj-btn" @click="hjSubmite('user')">登录</el-button>
-                <el-button style="margin-left:50%;margin-top:15px" @click="toregiste">没有登录账号，请注册</el-button>
+                <!-- <el-button style="margin-left:50%;margin-top:15px" @click="toregiste">没有登录账号，请注册</el-button> -->
         </el-form>
         <div class="bottom">
             <p>天津孚莱科技有限公司版权所有</p>
@@ -82,11 +82,11 @@
             this.makeCode(this.identifyCodes, 4)
         },
         methods: {
-            // 跳转到注册页面
-            toregiste(){
-                // console.log('1111111')
-                this.$router.push({name:'Register'}) 
-            },
+            // // 跳转到注册页面
+            // toregiste(){
+            //     // console.log('1111111')
+            //     this.$router.push({name:'Register'}) 
+            // },
             // 重置验证码
             refreshCode () {
                 this.identifyCode = ''

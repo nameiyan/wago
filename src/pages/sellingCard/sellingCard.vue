@@ -32,7 +32,7 @@
 
             <el-table
                 :data="cardList"
-                style="width: 100%"
+                style="width:100%"
                 border>
                 <el-table-column
                     type="index"
@@ -87,6 +87,13 @@
                 <el-table-column
                     prop="cardVx"
                     label="微信"
+                    width="130"
+                    align="center">
+                </el-table-column>
+
+                <el-table-column
+                    prop="cardQuan"
+                    label="权重"
                     width="130"
                     align="center">
                 </el-table-column>
@@ -168,6 +175,9 @@
                         <el-input v-model="ruleForm.cardResponsiblearea"></el-input>
                     </el-form-item>
                 
+                    <el-form-item label="权重">
+                        <el-input-number v-model="ruleForm.cardQuan" size="small" :min="1" :max="999999" label="权重"></el-input-number>
+                    </el-form-item>
                 
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('ruleForm')">确认修改</el-button>
@@ -213,7 +223,8 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                     cardAddress: '',
                     cardResponsiblearea: '',
                     cardStatus: '1',
-                    cardPassword:''
+                    cardPassword:'',
+                    cardQuan:''
                 },
                 zongshow:false
                 // 编辑的数据结束
@@ -489,7 +500,6 @@ import {validateMobile} from '../../assets/javascript/validate.js';
         font-size: 16px;
         width:100%;
         height: 100%;
-        overflow: hidden;
 
     }
     .top{

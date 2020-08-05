@@ -47,7 +47,9 @@
                     <el-input v-model="ruleForm.cardResponsiblearea"></el-input>
                 </el-form-item>
                 
-                
+                <el-form-item label="权重">
+                    <el-input-number v-model="ruleForm.cardQuan" @change="handleChange" size="small" :min="1" :max="999999" label="权重"></el-input-number>
+                </el-form-item>
 
                 <el-form-item>
                     <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -73,9 +75,11 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                     cardAddress: '',
                     cardResponsiblearea: '',
                     cardStatus: '1',
-                    cardPassword:''
+                    cardPassword:'',
+                    cardQuan:''
                 },
-                zongshow:false   //显示总公司的座机
+                zongshow:false,   //显示总公司的座机
+                
             }
         },
         
@@ -141,7 +145,10 @@ import {validateMobile} from '../../assets/javascript/validate.js';
                 this.$refs[formName].resetFields();
             },
 
-
+            // 权重
+            handleChange(value) {
+                console.log(value);
+            },
 
 
             // 分页的页数
