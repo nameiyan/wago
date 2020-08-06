@@ -14,20 +14,14 @@
             </div>
         </div>
         <div class="manege-content">
-            <div class="searchtop">
-                
-                <div class="search">
-                     <el-input class="elinput" clearable
-                        placeholder="请输入内容"
-                        v-model="searchInput">
-                        <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                    </el-input>
-                    <el-button @click="searchFuzzy" plain style="height:40px;margin-left:20px" type="primary" size="mini">查询</el-button>
+           
+            <div class="search" >
+                <div>
+                <el-button type="primary" plain @click="addRules()" class="toadd">添加规则说明</el-button>
                 </div>
-
             </div>
             
-
+            
 
             <el-table
                 :data="rulesList"
@@ -47,25 +41,28 @@
                 </el-table-column>
 
                 <el-table-column
-                    prop="context"
-                    label="规则内容"
-                    align="center">
-                </el-table-column>
-
-                <el-table-column
                     prop="create_time_change"
                     label="创建时间"
                     align="center">
                 </el-table-column>
+                
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button
+                        size="mini"
+                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <!-- <el-button
+                        size="mini"
+                        @click="handleCheck(scope.$index, scope.row)">查看</el-button> -->
+                        <el-button
+                        size="mini"
+                        type="danger"
+                        @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
 
             </el-table> 
-            <el-pagination
-                @size-change='changeSize'
-                @current-change='changePage'
-                :page-size="nowpageSize"
-                layout="total, prev, pager, next, jumper"
-                :total='rulesListtotal'>
-            </el-pagination>
+           
 
 
            
@@ -77,11 +74,9 @@
 // import CheckArticle from './CheckArticle.vue'
     export default {
         name: "rules",
+        inject:['reload'],
         data(){
             return{
-                nowpage: 1,
-                nowpageSize: 10,
-                rulesListtotal:null,  //总条数
                 rulesList:[],  //用户的数据
                 searchInput:'',//模糊查询的绑定值
             }
@@ -93,6 +88,49 @@
             this.getuserMessage()
         },
         methods: {
+            //  跳转到添加规则的页面
+            addRules(){
+                this.$router.push({name: 'addRules'});
+            },
+            // 删除规则说明
+            handleDelete(index,row){
+                var that = this
+                this.$confirm('此操作将永久删除该规则说明, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var mydata = {
+                        id:row.id
+                    }
+                    this.$axios({
+                        url: '/explain/delete',
+                        method: 'post',
+                        data:mydata
+                    }).then((res)=>{
+                        console.log('res2222',res)
+                        if(res.data.flag){
+                            that.$message.success(res.data.message)
+                            that.reload()
+                        }
+                    }).catch((err)=>{
+                        console.log(err)
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+
+
+                
+            },
+            // 修改规则说明
+            handleEdit(index,row){
+                this.$store.commit('editRules',row)     //存储需要编辑的数据  （方法名称，唯一参数）
+                this.$router.replace('/home/rules/editRules');
+            },
            // 模糊查询
             searchFuzzy(){
                 console.log('searchInput',this.searchInput)
@@ -101,11 +139,6 @@
             // 初始数据查询
             getuserMessage(){
                 var that = this
-                var mydata = {
-                    currentPage:that.nowpage,
-                    pageSize:that.nowpageSize,
-                    queryString:that.searchInput
-                }
                 this.$axios({
                     url: '/explain/getAll',
                     method: 'post'
@@ -195,8 +228,8 @@
     }
     .search{
         display: flex;
-        justify-content: space-between;
-
+        justify-content: flex-end;
+        margin: 20px 0 20px 30px;
     }
     .toadd{
         height: 40px;
@@ -205,16 +238,4 @@
     }
 
     
-    .select{
-        margin-bottom:10px
-    }
-    .searchtop{
-        display: flex;
-        justify-content: flex-start;
-    }
-    .search{
-        margin: 20px 0 20px 30px;
-        display: flex;
-        justify-content: flex-start;
-    }
 </style>

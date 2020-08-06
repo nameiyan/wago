@@ -190,6 +190,15 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
+                // 添加管理员    addManager
+                {
+                    path: '/home/manager/addManager',
+                    name: 'addManager',
+                    component: resolve => require(['@/pages/manager/addManager'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
                 // 规则说明管理  rules
                 {
                     path: '/home/rules/rules',
@@ -199,7 +208,24 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
-
+                // 添加规则说明  addRules
+                {
+                    path: '/home/rules/addRules',
+                    name: 'addRules',
+                    component: resolve => require(['@/pages/rules/addRules'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
+                // 修改规则说明  editRules
+                {
+                    path: '/home/rules/editRules',
+                    name: 'editRules',
+                    component: resolve => require(['@/pages/rules/editRules'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
                 // 留言管理MessageManage
                 {
                     path: '/home/MessageManage',

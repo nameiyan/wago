@@ -24,6 +24,10 @@ export default new Vuex.Store({
         articleEditData(state,row){
             state.articleEditData = row;
             // console.log('state.articleEditData',state.articleEditData)
+        },
+        editRules(state,row){
+            state.editRules = row;
+            // console.log('state.articleEditData',state.articleEditData)
         }
     },
     actions:{

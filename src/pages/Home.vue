@@ -90,6 +90,7 @@
                                 <el-menu-item index="7-1" @click="goTo('/home/manager/manager')">
                                     <i class="el-icon-reading"></i>管理者管理
                                 </el-menu-item>
+                                
                             </el-submenu>
                         <!-- 规则说明管理 rules-->
                             <el-submenu index="8">
@@ -97,7 +98,9 @@
                                 <el-menu-item index="8-1" @click="goTo('/home/rules/rules')">
                                     <i class="el-icon-reading"></i>规则说明管理
                                 </el-menu-item>
+                            
                             </el-submenu>
+                            
                           <!-- 留言管理 -->
                             <el-submenu index="9">
                                 <template slot="title"><span>留言管理</span></template>

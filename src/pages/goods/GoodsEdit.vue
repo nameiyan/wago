@@ -1,9 +1,7 @@
 <template>
     <div>
         <div style="margin: 20px;"></div>
-                <!-- product:{{ product }}, 
-                productImgList:{{ productImgList }}, -->
-                productParamList:{{ productParamList }},
+        
         <table class="mytable" border="1px" width="100%" ref="table"  >
             
             <tr>
@@ -261,6 +259,7 @@
         mounted(){
            this.getGoodsMessage();
         },
+       
         methods: {
             // 添加商品的提交按钮，提交所有数据
             updatasure(){
@@ -511,18 +510,31 @@
             submitProductParamList(){
                 var that = this
                 var mydata = that.productParamList
+                if(mydata.length < 1){
+                    that.$message({
+                        type: 'error',
+                        message: '请填写商品参数'
+                    })
+                    
+                }
+
                 this.$axios.post('/productParam/add',mydata)
                 .then(function (res) {
+                    
                     if(res.data.flag){
                         that.$message({
                             type: 'success',
                             message: '商品修改成功'
                         })
                         
-                        setTimeout(function () {
+                        
+                        setTimeout(function(){
                             that.closeTable();
-                            that.reload()
-                        }, 1000)
+                            // that.$router.push({name: 'GoodsManage' });
+                            parent.location.reload()
+                        },500)
+                        
+                      
                         
 
                     }
@@ -562,6 +574,7 @@
                     if(res.data.flag){
                         that.submitProductParamList()   //键值对修改提交
                     }
+                   
                 })
                 .catch(function (error) {
                 

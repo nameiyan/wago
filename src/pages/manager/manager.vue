@@ -10,19 +10,16 @@
        <div class="top-title">
             <div class="titlelist">
                 <img src="../../assets/images/manege.png" alt="" height="19px" width="19px">
-                <span>用户管理</span>
+                <span>管理者管理</span>
             </div>
         </div>
         <div class="manege-content">
             <div class="searchtop">
                 
                 <div class="search">
-                     <el-input class="elinput" clearable
-                        placeholder="请输入内容"
-                        v-model="searchInput">
-                        <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                    </el-input>
-                    <el-button @click="searchFuzzy" plain style="height:40px;margin-left:20px" type="primary" size="mini">查询</el-button>
+                     <div>
+                   <el-button type="primary" plain @click="addManager()" class="toadd">添加管理者</el-button>
+                </div>
                 </div>
 
             </div>
@@ -41,49 +38,31 @@
                 </el-table-column>
                 
                 <el-table-column
-                    prop="phone"
-                    label="电话号码"
+                    prop="name"
+                    label="管理员名称"
                     align="center">
                 </el-table-column>
 
                 <el-table-column
-                    prop="nickname"
-                    label="昵称"
+                    prop="username"
+                    label="名称"
                     align="center">
                 </el-table-column>
 
                 <el-table-column
-                    prop="headimgurl"
-                    label="头像"
+                    prop="password"
+                    label="密码"
                     align="center">
+                </el-table-column>
+
+                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
-                        <img v-if="scope.row.headimgurl != ''" :src="scope.row.headimgurl" alt style="height:100px;width:100px" />
-                        <img v-else src="../../assets/images/undefined.png" alt style="height:100px;width:100px" />
+                       
+                        <el-button
+                        size="mini"
+                        type="danger"
+                        @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
-                </el-table-column>
-
-                <el-table-column
-                    prop="zongJifen"
-                    label="总积分"
-                    align="center">
-                </el-table-column>
-
-                <el-table-column
-                    prop="jifen"
-                    label="现有积分"
-                    align="center">
-                </el-table-column>
-
-                <el-table-column
-                    prop="channel"
-                    label="渠道"
-                    align="center">
-                </el-table-column>
-
-                <el-table-column
-                    prop="distributor"
-                    label="经常采购的经销商"
-                    align="center">
                 </el-table-column>
 
                 
@@ -107,6 +86,7 @@
 // import CheckArticle from './CheckArticle.vue'
     export default {
         name: "manager",
+        inject:['reload'],
         data(){
             return{
                 nowpage: 1,
@@ -123,6 +103,43 @@
             this.getuserMessage()
         },
         methods: {
+            // 删除管理员
+            handleDelete(index,row){
+                console.log('row',row)
+                var that = this
+                var mydata = {
+                    id:row.id
+                }
+                this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios({
+                        url: '/admin/delete',
+                        method: 'post',
+                        data:mydata
+                    }).then((res)=>{
+                        if(res.data.flag){
+                            that.reload()
+                        }
+                    }).catch((err)=>{
+                        console.log(err)
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+
+
+                
+            },
+            // 跳转到添加管理者的页面
+            addManager(){
+                this.$router.push({name:'addManager'})
+            },
             // 分页查询所有管理员的信息
             getuserMessage(){
                 var that = this
@@ -130,12 +147,11 @@
                     url: '/admin/selectAll',
                     method: 'post'
                 }).then((res)=>{
-                    console.log('分页查询所有管理员的信息',res)
+                    console.log('分页查询所有管理员的信息',res.data.data)
                     if(res.data.flag){
-                        
+                        that.UserList = res.data.data;
                     }
-                    // that.UserList = res.data.rows;
-                    // that.cardListtotal = res.data.total
+                    
                     
                 }).catch((err)=>{
                     console.log(err)
@@ -208,8 +224,8 @@
     }
     .search{
         display: flex;
-        justify-content: space-between;
-
+        justify-content: flex-end;
+        margin: 20px 0 20px 30px;
     }
     .toadd{
         height: 40px;
@@ -217,19 +233,6 @@
         margin: 20px 40px 0 0;
     }
 
-    
-    .select{
-        margin-bottom:10px
-    }
-    .searchtop{
-        display: flex;
-        justify-content: flex-start;
-    }
-    .search{
-        margin: 20px 0 20px 30px;
-        display: flex;
-        justify-content: flex-start;
-    }
 </style>
 
 

@@ -63,6 +63,19 @@
                     </template>
                 </el-table-column>
 
+                <el-table-column
+                    prop="quan"
+                    label="权重"
+                    align="center">
+                </el-table-column>
+
+                <el-table-column
+                    prop="createTime"
+                    label="时间"
+                    align="center">
+
+                </el-table-column>
+
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -148,6 +161,7 @@ import CheckArticle from './CheckArticle.vue'
                 }).then(function (res) {
                     that.total = res.data.total;
                     that.tableData = res.data.rows;
+                    console.log('用电安全',that.tableData)
                     if(res.data.total < 1){
                         that.$message.error('暂无数据！')
                     }

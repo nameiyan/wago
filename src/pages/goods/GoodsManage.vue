@@ -216,6 +216,7 @@
 import GoodsEdit from "./GoodsEdit.vue";
 export default {
   name: "GoodsManage",
+  inject:['reload'],
   components: {
     GoodsEdit
   },
@@ -263,6 +264,11 @@ export default {
   },
   mounted() {
     this.goodsMessage();
+  },
+   watch:{
+     $route (to, from) {
+      this.$router.go(0)
+    }
   },
   methods: {
     // 模糊查询
