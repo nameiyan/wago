@@ -29,15 +29,15 @@
                         </template>
                     </el-input>
                     </div>
-                   
+                    
                 </div>
                     
                 <el-button class="hj-btn" @click="hjSubmite('user')">登录</el-button>
                 <!-- <el-button style="margin-left:50%;margin-top:15px" @click="toregiste">没有登录账号，请注册</el-button> -->
         </el-form>
-        <div class="bottom">
+        <!-- <div class="bottom">
             <p>天津孚莱科技有限公司版权所有</p>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
@@ -110,26 +110,19 @@
                 }
                 this.$refs.user.validate(valid => {
                     if (valid) {
-                       var data = '/user/login?userName=' + this.user.username +'&userPassword=' + this.user.password;
-                        
+                        var data = {
+                                username:this.user.username,
+                                password:this.user.password
+                        }
+                        console.log('datadatadata',data)
                         var vm = this;
-                        this.$axios.post(data).then(function (response) {
+                        this.$axios.post('/admin/selectByUserNameAndPassword',data).then(function (response) {
                             var res = response;
-                            var userId = res.data.data.userId;
-                            var homeRole = res.data.data.roleId
-                            console.log('用户角色id',homeRole)
-                            // 存储token
-                            var msn = res.data.message;
-                            vm.$store.commit('changeToken',msn)   //存储token
-                            vm.$store.commit('userId',userId)     //存储userId
-                            window.localStorage.setItem('token', msn)   //将token存到本地
-                            window.localStorage.setItem('userId', userId)    //将用户的userId存到本地
-                            window.localStorage.setItem('homeRole', homeRole) //homeRole将用户的角色存储到本地
                             if(res.data.flag){
                                 console.log('登录成功')
-                                vm.$router.push({name:'limitList'}) 
+                                vm.$router.push({name:'sellingCard'}) 
                             }else{
-                                this.$message.error('登录失败')
+                                vm.$message.error('登录失败')
                                 // this.$message.error("请输入正确用户名和密码！");
                             }
                         })

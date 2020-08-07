@@ -3,17 +3,18 @@
         <div class="top-title">
             <div class="titlelist">
                 <img src="../../assets/images/manege.png" alt="" height="19px" width="19px">
-                <span>意见反馈</span>
+                <span>留言管理</span>
             </div>
         </div>
         <div class="manege-content">
             <div class="search" >
-                <el-input style="height:50px;width:180px;margin:20px"
+                <!-- <el-input style="height:50px;width:180px;margin:20px"
                     placeholder="请输入订单编号"
                     v-model=" unclearSearch"
                     clearable>
                 </el-input>
                 <el-button type="primary" plain @click="requireEva()" style="height:40px;width:100px;margin-top:20px">查询</el-button>
+                -->
             </div>
             <template>
                 <el-table
@@ -21,91 +22,60 @@
                     border
                     style="width: 100%">
                     <el-table-column
-                    prop="id"
-                    label="ID"
-                    align="center"
-                    width="80">
+                        type="index"
+                        label="ID"
+                        width="80"
+                        align="center">
                     </el-table-column>
+
                     <el-table-column
-                    prop="order_id"
-                    label="订单编号"
-                    align="center"
-                    width="100">
+                        prop="nickname"   
+                        label="用户昵称"
+                        align="center">
                     </el-table-column>
+
                     <el-table-column
-                    prop="consumer_id"   
-                    label="用户编号"
-                    align="center"
-                    width="100">
+                        prop="message"   
+                        label="评价内容"
+                        align="center">
                     </el-table-column>
+
                     <el-table-column
-                    prop="goods_id"   
-                    label="商品ID"
-                    align="center"
-                    width="100">
+                        prop="title"   
+                        label="文章标题"
+                        align="center">
                     </el-table-column>
+
                     <el-table-column
-                    prop="content"   
-                    label="评价内容"
-                    align="center"
-                    width="200">
+                        prop="createTime_transfer"
+                        label="创建时间"
+                        align="center">
                     </el-table-column>
-                    <!-- 商品评价 -->
-                    <el-table-column
-                    prop="describe"
-                    align="center"
-                    label="商品评价">
-                        <template slot-scope="scope">
-                            <el-rate
-                                v-model="scope.row.describe"
-                                disabled
-                                show-score
-                                text-color="#ff9900"
-                                score-template="{value}">
-                            </el-rate>
-                        </template>
-                    </el-table-column>
-                    <!-- 服务评价 -->
-                    <el-table-column
-                    prop="service"
-                    align="center"
-                    label="服务评价">
-                        <template slot-scope="scope">
-                            <el-rate
-                                v-model="scope.row.service"
-                                disabled
-                                show-score
-                                text-color="#ff9900"
-                                score-template="{value}">
-                            </el-rate>
-                        </template>
-                    </el-table-column>
-                    <!-- 物流评价 -->
-                    <el-table-column
-                    align="center"
-                    prop="logistics"
-                    label="物流评价">
-                        <template slot-scope="scope">
-                            <el-rate
-                                v-model="scope.row.logistics"
-                                disabled
-                                show-score
-                                text-color="#ff9900"
-                                score-template="{value}">
-                            </el-rate>
-                        </template>
-                    </el-table-column>
+                    
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
+                        
                             <el-button
-                                size="mini"
-                                type="danger"
-                                @click="handleDelete(scope.$index, scope.row)">删除
-                            </el-button>
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
+
                 </el-table>
+                
             </template>
+            <div class="block">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[10, 20, 30, 40]"
+                    :page-size="nowpageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+                </el-pagination>
+            </div>
        </div>
     </div>
 </template>
@@ -120,7 +90,7 @@
                 nowpage:1,
                 nowpageSize:10,
                 currentPage:1,
-                totalMessage:'',
+                total:null,
                 // value:3.3
                 unclearSearch:''
             }
@@ -133,71 +103,88 @@
            this.getEvaluate()
         },
         methods: {
+            // 删除留言   
+            handleDelete(indexer,row){
+                console.log('rowwwwwwwwwwwwww',row)
+                this.$confirm('此操作将受理此次申请, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var form = {
+                        id:row.id
+                    }
+                    var vm = this;
+                    this.$axios.post('/liuyan/delete',form).then(function (res) {
+                        if(res.data.flag){
+                            vm.$message({
+                                type: 'success',
+                                message: '留言删除成功！'
+                            }); 
+                            vm.reload()
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log('catch')
+                    });
+                
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已撤消操作'
+                    });      
+                });
+
+
+
+
+
+
+               
+            },
             // 查询所有意见
             getEvaluate() {
                 var form = {
-                    page:this.currentPage,
-                    size:this.nowpageSize
+                    currentPage:this.currentPage,
+                    pageSize:this.nowpageSize
                 }
+                console.log('form',form)
                 var vm = this;
-                this.$axios.get('/opinion/findAll',form).then(function (response) {
-                    console.log('返回的意见反馈',response.data)
-                    if(response.data.flag){
-                        // console.log('查询成功',response.data.message)
-                        vm.totalMessage = response.data.data.total,
-                        vm.tableData = response.data.data.rows
-                    }
+                this.$axios.post('/liuyan/selectAllLiuYan',form).then(function (res) {
+                    
+                    vm.total = res.data.total
+
+                    var mydata = res.data.rows
+                    mydata.forEach(function(item,index){
+                        item.createTime_transfer = vm.createGoodsTime(item.createTime)
+                    })
+                    vm.tableData = mydata
                     
                 })
                 .catch(function (error) {
                     console.log('catch')
                 });
             },
-            // 删除评论
-            handleDelete(index,row){
-                console.log('row',row)
-                console.log('row',typeof row.id)
-                var evaid = JSON.stringify(row.id)
-                console.log('row',typeof evaid)
-                var form = '/evaluate/delete?id='+ row.id
-                
-
-                this.$confirm('此操作将删除该评论, 是否继续?', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        var vm = this;
-                        this.$axios.post(form).then(function (response) {
-                            vm.reload()
-                        })
-                        .catch(function (error) {
-            
-                        });
-                        // 删除后再次查询商品
-                        this.goodsMessage()
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-                    }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '已取消删除'
-                        });          
-                    });
-               
+             // 时间的格式转换
+            createGoodsTime(value) {
+                // console.log('value',value)
+                var date = new Date(value);
+                var Y = date.getFullYear() + "-";
+                var M = (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1) + "-";
+                var D = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                var time = Y + M + D;
+                return time;
             },
-            // 评论查询
-            requireEva(){
-                var form = '/evaluate/findByOrderId?order_id='+ this.unclearSearch
-                this.$axios.post(form).then(function (response) {
-                        console.log('response',response)
-                  })
-                  .catch(function (error) {
-       
-                  });
-            }
+            handleSizeChange(val) {
+                this.currentPage = 1
+                this.nowpageSize = val
+                this.getEvaluate()
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val
+                this.getEvaluate()
+            },
+            
         }
     }
     
@@ -230,6 +217,7 @@
     .manege-content{
         background: #fff;
         margin: 37px 35px;
+        padding: 30px;
     }
     .no-msg>.top-title{
        height: 66px;

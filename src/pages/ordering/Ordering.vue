@@ -29,143 +29,154 @@
                    <el-input v-model="orderCodeSearch" placeholder="请输入订单编号"></el-input>
                 </div> -->
                 <!-- 搜索 -->
-                <div class="telephone_search">
+                <!--<div class="telephone_search">
                    <span style="width:125px">用户ID</span>
                    <el-input v-model="userId" placeholder="请输入用户ID"></el-input>
                    <el-button @click="search" type="primary" style="height:40px;width:80px;margin:20px 10px 0 30px">查询</el-button>
-                </div>
+                </div> -->
             </div>
 
             
 
             <el-table
-                ref="multipleTable"
                 :data="tableData"
-                tooltip-effect="dark"
                 style="width: 90%;margin-left:5%"
-                @selection-change="handleSelectionChange">
+                border>
+
                 <el-table-column
-                    label="全选"
-                    type="selection"
-                    align='center'
-                    width="55">
+                    type="index"
+                    label="ID"
+                    sortable
+                    align="center">
                 </el-table-column>
+
                 <el-table-column
-                    label="id"
+                    prop="order.createTime"
                     align='center'
-                    width="80">
-                    <template slot-scope="scope">{{ scope.row.id }}</template>
+                    label="订单创建时间">
                 </el-table-column>
+
                 <el-table-column
-                    prop="num"
-                    label="订单号"
+                    prop="product.productName"
                     align='center'
-                    width="120">
-                </el-table-column>
-                <el-table-column
-                    prop="orderDate_change"
-                    align='center'
-                    label="订单时间">
-                </el-table-column>
-                <el-table-column
-                    prop="orderGoodsList"
-                    label="下单商品"
-                    align='center'
-                    width="100">
-                    <template slot-scope="scope">
-                        <div v-for="(item,index) in scope.row.orderGoodsList" :key="index">
-                            {{ item.goods_id }}
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                    prop="orderType"
-                    align='center'
-                    label="订单类型">
-                </el-table-column>
-                <el-table-column
-                    prop="price"
-                    align='center'
-                    label="商品价格">
-                </el-table-column>
-                <el-table-column
-                    prop="pay_status"
-                    align='center'
-                    label="支付状态">
-                    <!-- 已支付，未支付 -->
-                    
-                    <template slot-scope="scope">{{ scope.row.pay_status == '1' ? '未支付' : '已支付'}}</template>
-                </el-table-column>
-                <el-table-column
-                    prop="remark"
-                    align='center'
-                    label="备注内容">
+                    label="产品名称">
                 </el-table-column>
                 
                 <el-table-column
-                    prop="ship_status"
+                    prop="product.thumbnail"
                     align='center'
-                    label="运输状态">
-                    <template slot-scope="scope">{{ scope.row.ship_status == '1' ? '未发货' : (scope.row.ship_status == '2' ? '已发货' :'已收货')}}</template>
-                </el-table-column>
-                 <el-table-column
-                    prop="consumer_id"
-                    align='center'
-                    label="用户id">
-                </el-table-column>
-                <el-table-column label="操作">
+                    label="产品图片"
+                    width="140">
                     <template slot-scope="scope">
-                        <el-button
-                            size="mini"
-                            @click="handleEdit(scope.$index, scope.row)">查看
-                        </el-button>
-                        <el-button
-                            size="mini"
-                            type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除
-                        </el-button>
+                        <img
+                            v-if="scope.row.product.thumbnail != ''"
+                            :src="scope.row.product.thumbnail"
+                            alt
+                            style="height:100px;width:100px"
+                            />
+                        <img
+                            v-else
+                            src="product.thumbnail"
+                            alt
+                            style="height:100px;width:100px"
+                            />
                     </template>
                 </el-table-column>
+
+                <el-table-column
+                    prop="address.name"
+                    align='center'
+                    label="收货人">
+                </el-table-column>
+
+                <el-table-column
+                    prop="address.phone"
+                    align='center'
+                    label="联系电话">
+                </el-table-column>
+
+                <el-table-column
+                    prop="address.address"
+                    label="地址"
+                    align='center'
+                    width="120">
+                </el-table-column>
+
+                <el-table-column
+                    prop="order.remarks"
+                    align='center'
+                    label="备注">
+                </el-table-column>
+
+                <el-table-column
+                    prop="order.expressnumber"
+                    label="快递单号"
+                    align='center'
+                    width="130">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.order.expressnumber }}</span>
+                        <el-button
+                            v-if="scope.row.order.expressnumber == null"
+                            size="mini"
+                            type="success"
+                            @click="showExpress(scope.$index, scope.row)">填写快递单号
+                        </el-button>
+                     </template>
+                </el-table-column>
+
             </el-table>
-            <el-pagination
-                @size-change='changeSize'
-                @current-change='changePage'
-                :page-sizes="[10, 20, 30, 40]"
-                :page-size="10"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total='totalMessage'>
-            </el-pagination>
-            <!-- 商品查看 -->
-            <!-- <el-dialog
-                title="商品信息"
-                :visible.sync="goodsVisible"
-                width="70%"
-                center>
-                <CheckGoods :table="tablelist"></CheckGoods>
-            </el-dialog> -->
-            <!-- 订单查看 -->
+            <div class="block">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[10, 20, 30, 40]"
+                    :page-size="nowpageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+                </el-pagination>
+            </div>
+        
+            <!-- 填写快递单号 -->
             <el-dialog
-                title="商品信息"
+                title="快递单号"
                 :visible.sync="orderVisible"
                 width="70%"
                 center>
-                <CheckOrder :tableorder="tableorderlist"></CheckOrder>
+                <el-form ref="form" :model="form" label-width="80px">
+                    <el-form-item label="快递单号">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="addExpressnumber">立即添加</el-button>
+                    </el-form-item>
+                </el-form>
+                
             </el-dialog>
        </div>
     </div>
 </template>
 
 <script>
-import CheckOrder from './CheckOrder.vue'
     export default {
         name: "Ordering",
         inject:['reload'],
-        components:{ CheckOrder},
         data(){
             return{
+                nowpage:1,
+                nowpageSize:10,
+                currentPage:1,
+                total:null,
+                tableData: [],
+                orderVisible:false,
+                form: {
+                    name: ''
+                },
+                orderid:'',
+
                 activeName: 'first',  //tab默认展示第一个tab里的内容
                 checked: false,    //全选
-                tableData: [],
+                
                 daterange:'',//日期范围
                 orderCodeSearch:'',//订单编号
                 telephone:'',   //用户手机号
@@ -174,7 +185,7 @@ import CheckOrder from './CheckOrder.vue'
                 nowpageSize:10,
                 currentPage:1,
                 goodsVisible:false,
-                orderVisible:false,
+                
                 tablelist:[],
                 tableorderlist:[],
                 userId:'',
@@ -191,16 +202,16 @@ import CheckOrder from './CheckOrder.vue'
             // 查看订单
             getOrderList(){
                 var param = {
-                     currentPage:this.nowpage,
-                     pageSize:this.nowpageSize
+                     page:this.currentPage,
+                     size:this.nowpageSize
                 };
                 // console.log('param',param)
                 var vm = this;
-                this.$axios.post('/order/select',param).then(function (response) {
-                    console.log('response',response)
-                    if(response.data.flag){
-                        vm.totalMessage = response.data.data.total,
-                        vm.tableData = response.data.data.list
+                this.$axios.post('/order/select',param).then(function (res) {
+                    console.log('res',res)
+                    if(res.data.flag){
+                        vm.total = res.data.data.total,
+                        vm.tableData = res.data.data.rows
                     }
 
 
@@ -224,78 +235,52 @@ import CheckOrder from './CheckOrder.vue'
                 var time = Y+M+D;
                 return time;
             },
-            changePage(page){
-                 this.nowpage = page;
-                 this.getOrderList()
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.currentPage = 1
+                this.nowpageSize = val
+                this.getOrderList()
             },
-            changeSize(pagesize){
-                 this.nowpageSize= pagesize;
-                 this.nowpage =1;
-                 this.getOrderList()
-             },
-            handleClick(tab, event) {
-                console.log(tab, event);
+            handleCurrentChange(val) {
+                 console.log(`当前页: ${val}`);
+                this.currentPage = val
+                this.getOrderList()
             },
-            // 搜索
-            search(){
-                if(this.userId){
-                    var param = '/order/findByUserId?consumer_id=' + this.userId
-                    var formdata = {
-                        currentPage:this.currentPage,
-                        pageSize:this.nowpageSize,
-                        queryString:""
-                    }
-                    var vm = this;
-                    this.$axios({
-                        url: param,
-                        method: 'post',
-                        data:formdata,
-                        headers: {'Content-Type':'application/json;charset=UTF-8'}
-                    }).then(function (response) {
-                        // console.log('response',response.data.rows)
-                        vm.totalMessage = response.data.total,
-                        vm.tableData = response.data.rows,
-                        vm.tableData.forEach(function(item, index) {
-                            item.orderDate_change = vm.createGoodsTime(item.orderDate)
-                        })
-                    })
-                    .catch(function (error) {
-                        console.log('err')
-                    });
-                }else{
-                    this.getOrderList()
+            showExpress(index,row){
+                this.orderVisible = true
+                this.orderid = row.order.orderid
+            },
+            // 填写快递单号
+            addExpressnumber(orderid){
+                console.log('orderid',orderid)
+                if(orderid == ''){
+                    console.log('orderidddddddddddddd')
+                    return
                 }
-                
+                var param = {
+                    orderid:this.orderid,
+                    expressnumber:this.form.name,   // 发货时写,其他时候不用
+                    status:"2"
+                };
+                console.log('param',param)
+                var vm = this;
+                this.$axios.post('/order/acceptance',param).then(function (res) {
+                    console.log('res',res)
+                    if(res.data.flag){
+                        vm.$message({
+                            type: 'success',
+                            message: '提交成功!'
+                        });
+                        vm.orderVisible = false
+                        vm.reload()
+                    }
 
-
-            //     this.$axios.post('/order/findByUserId?user_id=4').then(function (response) {
-            //         console.log('response')
-            //     })
-            //     .catch(function (error) {
-            //         console.log('errddddddddddddddddd')
-            //     });
-
-            //     var param = '/order/findByUserId?user_id=' + this.userId;
-            //     console.log('param',param)
-            //     var vm = this;
-            // //     this.$axios.post(param).then(function (response) {
-            // //         console.log('response',response)
-            // //     })
-            // //     .catch(function (error) {
-            // //         console.log('err')
-            // //     });
-            //     var formdata = { user_id : this.userId}
-            //     this.$axios({
-            //         url: '/order/findByUserId',
-            //         method: 'post',
-            //         data: formdata,
-            //         headers: {'content-Type':'application/json; charset=UTF-8'}
-            //     }).then((re)=>{
-                    
-            //     }).catch((err)=>{
-            //         console.log(err)
-            //     })
+                })
+                .catch(function (error) {
+                    console.log('catch')
+                });
             },
+
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },

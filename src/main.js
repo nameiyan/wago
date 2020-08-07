@@ -16,6 +16,10 @@ import Excel from './assets/javascript/excel.js';
 import Print from './assets/javascript/print.js';
 import './common/font/font.css';
 
+/* 引入公共方法的js*/
+import filetype from '@/pages/general/filetype.js'
+Vue.prototype.filetype=filetype;
+
 // 时间处理插件
 import moment from "moment";
 import Axios from 'axios';

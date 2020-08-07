@@ -48,8 +48,7 @@
             <quill-editor ref="myQuillEditor" 
                 class="myQuillEditor"
                 v-model="content" 
-                :options="quillConfig" 
-                
+                :options="quillConfig"
                 >
                 <!--@change="onEditorChange($event)" -->
                 <img id='contentPic'  :src='imgUrl'/>

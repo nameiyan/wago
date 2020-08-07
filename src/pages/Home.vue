@@ -3,162 +3,184 @@
         <!-- 左侧导航栏 -->
         <div class="navigate">
             <div class="logo">
-                <img src="../assets/images/logo.jpg" alt="">
+                <img src="../assets/images/logo.png" alt="">
             </div>
-            <div class="outer">
-                <el-scrollbar>
-                    <div class="inner">
-                         <el-col>
-                        <el-menu
-                        default-active="1"
-                        class="el-menu-vertical-demo"
-                        @open="handleOpen"
-                        @close="handleClose"
-                        background-color="rgb(255,255,255,0)"
-                        text-color="#fff"
-                        active-text-color="#FFFC00">
-                        <!-- 销售名片管理 -->
-                            <el-submenu index="1">
-                                <template slot="title"><span>销售名片管理</span></template>
-                                <el-menu-item index="1-1"  @click="goTo('/home/sellingCard')">
-                                    <i class="el-icon-s-custom"></i>销售名片查看
-                                </el-menu-item>
-                                <el-menu-item index="1-2" @click="goTo('/home/sellingCard/addsellingCard')">
-                                    <i class="el-icon-s-custom"></i>
-                                    添加销售名片
-                                </el-menu-item>
-                            </el-submenu>
-                        <!-- 商品管理 -->
-                            <el-submenu index="2">
-                                <template slot="title"><span>商品管理</span></template>
-                                <el-menu-item index="2-1"  @click="goTo('/home/GoodsManage')">
-                                    <i class="el-icon-coin"></i>商品管理
-                                </el-menu-item>
-                                <el-menu-item index="2-2" @click="goTo('/home/AddGoods')">
-                                    <i class="el-icon-shopping-cart-full"></i>添加商品
-                                </el-menu-item>
-                            </el-submenu>
-                         <!-- 文章管理 -->
-                            <el-submenu index="3">
-                                <template slot="title"><span>用电安全</span></template>
-                                <el-menu-item index="3-1" @click="goTo('/home/Article')">
-                                    <i class="el-icon-reading"></i>用电安全
-                                </el-menu-item>
-                                <el-menu-item index="3-2" @click="goTo('/home/Article/Articletype')">
-                                    <i class="el-icon-reading"></i>类型查看
-                                </el-menu-item>
-                            </el-submenu>
-                        <!-- 轮播图管理 carouselFigure-->
-                             <el-submenu index="4">
-                                <template slot="title"><span>轮播图管理</span></template>
-                                <el-menu-item index="4-1" @click="goTo('/home/carouselFigure/carouselFigure')">
-                                    <i class="el-icon-reading"></i>轮播图管理
-                                </el-menu-item>
-                                
-                            </el-submenu>
-                        <!-- 用户管理 userMessage-->
-                            <el-submenu index="5">
-                                <template slot="title"><span>用户管理</span></template>
-                                <el-menu-item index="5-1" @click="goTo('/home/userMessage/userMessage')">
-                                    <i class="el-icon-reading"></i>用户管理
-                                </el-menu-item>
-                                
-                            </el-submenu>
-                            
-                        
-                        <!-- 订单管理 
-                            <el-submenu index="4">
-                                <template slot="title"><span>订单管理</span></template>
-                                <el-menu-item index="4-1" @click="goTo('/home/Ordering')">
-                                    <i class="el-icon-reading"></i>订单管理
-                                </el-menu-item>
-                                <el-menu-item index="4-2" @click="goTo('/home/Ordering/AddOrder')">
-                                    <i class="el-icon-reading"></i>添加订单
-                                </el-menu-item>
-                            </el-submenu>-->
-                      
-                         <!--     积分管理   pointManagement    -->
-                            <el-submenu index="6">
-                                <template slot="title"><span>积分管理</span></template>
-                                <el-menu-item index="6-1" @click="goTo('/home/pointManagement')">
-                                    <i class="el-icon-reading"></i>积分查询
-                                </el-menu-item>
-                            </el-submenu>
-                        <!-- 管理者管理 manager-->
-                            <el-submenu index="7">
-                                <template slot="title"><span>管理者管理</span></template>
-                                <el-menu-item index="7-1" @click="goTo('/home/manager/manager')">
-                                    <i class="el-icon-reading"></i>管理者管理
-                                </el-menu-item>
-                                
-                            </el-submenu>
-                        <!-- 规则说明管理 rules-->
-                            <el-submenu index="8">
-                                <template slot="title"><span>规则说明管理</span></template>
-                                <el-menu-item index="8-1" @click="goTo('/home/rules/rules')">
-                                    <i class="el-icon-reading"></i>规则说明管理
-                                </el-menu-item>
-                            
-                            </el-submenu>
-                            
-                          <!-- 留言管理 -->
-                            <el-submenu index="9">
-                                <template slot="title"><span>留言管理</span></template>
-                                <el-menu-item index="9-1" @click="goTo('/home/MessageManage')">
-                                    <i class="el-icon-reading"></i>留言管理
-                                </el-menu-item>
-                                <!--<el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
-                                    <i class="el-icon-reading"></i>添加意见反馈
-                                </el-menu-item>   -->
-                            </el-submenu>
-                        <!-- 权限管理 -->
-                            <!-- <el-submenu index="1">
-                                <template slot="title"><span>权限管理</span></template>
-                                <el-menu-item index="1-1"  @click="goTo('/home/limitList')">
-                                    <i class="el-icon-s-custom"></i>权限管理
-                                </el-menu-item> -->
-                                <!-- <el-menu-item index="1-2">
-                                    <img src="../assets/images/roled.png" alt="" style="width:21px;height：19px">
-                                    用户管理
-                                </el-menu-item> -->
-                            <!-- </el-submenu> -->
-                        <!-- 商品管理 -->
-                            <!-- <el-submenu index="2">
-                                <template slot="title"><span>商品管理</span></template>
-                                <el-menu-item index="2-1"  @click="goTo('/home/GoodsManage')">
-                                    <i class="el-icon-coin"></i>商品管理
-                                </el-menu-item>
-                                <el-menu-item index="2-2" @click="goTo('/home/AddGoods')">
-                                    <i class="el-icon-shopping-cart-full"></i>添加商品
-                                </el-menu-item>
-                            </el-submenu> -->
-                           
-                           
-                            
-                            <!-- 留言管理 -->
-                            <!-- <el-submenu index="5">
-                                <template slot="title"><span>留言管理</span></template>
-                                <el-menu-item index="5-1" @click="goTo('/home/MessageManage')">
-                                    <i class="el-icon-reading"></i>留言管理
-                                </el-menu-item>
-                                <el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
-                                    <i class="el-icon-reading"></i>添加留言
-                                </el-menu-item>
-                            </el-submenu> -->
-                        </el-menu>
-                    </el-col>
-                   </div>
-               </el-scrollbar>
-            </div>
+           
              
-            </div>
+    
+        
+            <el-menu 
+                    default-active="1"
+                                class="el-menu-vertical-demo"
+                                @open="handleOpen"
+                                @close="handleClose"
+                                
+                                background-color="rgb(255,255,255,0)"
+                                text-color="#fff"
+                                active-text-color="#FFFC00">
+                    <!-- 销售名片管理 -->
+                                <el-submenu index="1">
+                                    <template slot="title"><span>销售名片管理</span></template>
+                                    <el-menu-item index="1-1"  @click="goTo('/home/sellingCard')">
+                                        <i class="el-icon-s-custom"></i>销售名片查看
+                                    </el-menu-item>
+                                    <el-menu-item index="1-2" @click="goTo('/home/sellingCard/addsellingCard')">
+                                        <i class="el-icon-s-custom"></i>
+                                        添加销售名片
+                                    </el-menu-item>
+                                </el-submenu>
+                            <!-- 商品管理 -->
+                                <el-submenu index="2">
+                                    <template slot="title">
+                                        <span>商品管理</span>
+                                    </template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="2-1"  @click="goTo('/home/GoodsManage')">
+                                            <i class="el-icon-coin"></i>商品管理
+                                        </el-menu-item>
+                                        <el-menu-item index="2-2" @click="goTo('/home/AddGoods')">
+                                            <i class="el-icon-shopping-cart-full"></i>添加商品
+                                        </el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
+                            <!-- 文章管理 -->
+                                <el-submenu index="3">
+                                    <template slot="title"><span>用电安全</span></template>
+                                    <el-menu-item index="3-1" @click="goTo('/home/Article')">
+                                        <i class="el-icon-reading"></i>用电安全
+                                    </el-menu-item>
+                                    <el-menu-item index="3-2" @click="goTo('/home/Article/Articletype')">
+                                        <i class="el-icon-reading"></i>类型查看
+                                    </el-menu-item>
+                                </el-submenu>
+                            <!-- 轮播图管理 carouselFigure-->
+                                <el-submenu index="4">
+                                    <template slot="title"><span>轮播图管理</span></template>
+                                    <el-menu-item index="4-1" @click="goTo('/home/carouselFigure/carouselFigure')">
+                                        <i class="el-icon-reading"></i>轮播图管理
+                                    </el-menu-item>
+                                    
+                                </el-submenu>
+                                
+                            <!--     积分管理   pointManagement    -->
+                                <el-submenu index="6">
+                                    <template slot="title"><span>积分管理</span></template>
+                                    <el-menu-item index="6-1" @click="goTo('/home/pointManagement')">
+                                        <i class="el-icon-reading"></i>积分查询
+                                    </el-menu-item>
+                                </el-submenu>
+                            <!-- 管理者管理 manager-->
+                                <el-submenu index="7">
+                                    <template slot="title"><span>用户管理</span></template>
+                                    <el-menu-item index="7-1" @click="goTo('/home/manager/manager')">
+                                        <i class="el-icon-reading"></i>管理者管理
+                                    </el-menu-item>
+                                    <el-menu-item index="5-1" @click="goTo('/home/manager/userMessage')">
+                                        <i class="el-icon-reading"></i>用户管理
+                                    </el-menu-item>
+                                </el-submenu>
+                            <!-- 规则说明管理 rules-->
+                                <el-submenu index="8">
+                                    <template slot="title"><span>规则说明管理</span></template>
+                                    <el-menu-item index="8-1" @click="goTo('/home/rules/rules')">
+                                        <i class="el-icon-reading"></i>规则说明管理
+                                    </el-menu-item>
+                                
+                                </el-submenu>
+                                
+                            <!-- 留言管理 -->
+                                <el-submenu index="9">
+                                    <template slot="title"><span>评价管理</span></template>
+                                        <el-menu-item index="9-1" @click="goTo('/home/MessageManage')">
+                                            <i class="el-icon-reading"></i>留言管理
+                                        </el-menu-item>
+                                        <el-menu-item index="9-2" @click="goTo('/home/MessageManage/productFeedback')">
+                                            <i class="el-icon-reading"></i>新品反馈
+                                        </el-menu-item>
+                                        <el-menu-item index="9-3" @click="goTo('/home/MessageManage/scanCode')">
+                                            <i class="el-icon-reading"></i>扫码评价管理
+                                        </el-menu-item>
+                                    <!--<el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
+                                        <i class="el-icon-reading"></i>添加意见反馈
+                                    </el-menu-item>   -->
+                                </el-submenu>
+                                
+                            <!-- 新品申请管理 -->
+                                <el-submenu index="10">
+                                    <template slot="title"><span>新品申请管理</span></template>
+                                    <el-menu-item index="10-1" @click="goTo('/home/productApplication')">
+                                        <i class="el-icon-reading"></i>新品申请管理
+                                    </el-menu-item>
+                                    <!--<el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
+                                        <i class="el-icon-reading"></i>添加意见反馈
+                                    </el-menu-item>   -->
+                                </el-submenu>
+                            <!-- 扫码评价管理
+                                <el-submenu index="11">
+                                    <template slot="title"><span>扫码评价管理</span></template>
+                                    <el-menu-item index="11-1" @click="goTo('/home/scanCode')">
+                                        <i class="el-icon-reading"></i>扫码评价管理
+                                    </el-menu-item> -->
+                                    <!--<el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
+                                        <i class="el-icon-reading"></i>添加意见反馈
+                                    </el-menu-item>  
+                                </el-submenu> -->
+
+                            <!-- 订单管理 -->
+                                <el-submenu index="12">
+                                    <template slot="title"><span>订单管理</span></template>
+                                    <el-menu-item index="12-1" @click="goTo('/home/Ordering')">
+                                        <i class="el-icon-reading"></i>订单管理
+                                    </el-menu-item>
+                                    <!-- <el-menu-item index="12-2" @click="goTo('/home/Ordering/AddOrder')">
+                                        <i class="el-icon-reading"></i>添加订单
+                                    </el-menu-item> -->
+                                </el-submenu>
+
+                            
+                            <!-- 权限管理 -->
+                                <!-- <el-submenu index="1">
+                                    <template slot="title"><span>权限管理</span></template>
+                                    <el-menu-item index="1-1"  @click="goTo('/home/limitList')">
+                                        <i class="el-icon-s-custom"></i>权限管理
+                                    </el-menu-item> -->
+                                    <!-- <el-menu-item index="1-2">
+                                        <img src="../assets/images/roled.png" alt="" style="width:21px;height：19px">
+                                        用户管理
+                                    </el-menu-item> -->
+                                <!-- </el-submenu> -->
+                            <!-- 商品管理 -->
+                                <!-- <el-submenu index="2">
+                                    <template slot="title"><span>商品管理</span></template>
+                                    <el-menu-item index="2-1"  @click="goTo('/home/GoodsManage')">
+                                        <i class="el-icon-coin"></i>商品管理
+                                    </el-menu-item>
+                                    <el-menu-item index="2-2" @click="goTo('/home/AddGoods')">
+                                        <i class="el-icon-shopping-cart-full"></i>添加商品
+                                    </el-menu-item>
+                                </el-submenu> -->
+                            
+                            
+                                
+                                <!-- 留言管理 -->
+                                <!-- <el-submenu index="5">
+                                    <template slot="title"><span>留言管理</span></template>
+                                    <el-menu-item index="5-1" @click="goTo('/home/MessageManage')">
+                                        <i class="el-icon-reading"></i>留言管理
+                                    </el-menu-item>
+                                    <el-menu-item index="5-2" @click="goTo('/home/AddMessage')">
+                                        <i class="el-icon-reading"></i>添加留言
+                                    </el-menu-item>
+                                </el-submenu> -->
+                </el-menu>
+        </div>
         <!-- 右侧的内容 -->
         <div class="right">
             <!-- 右侧上部分的 -->
             <div class="right_top">
                 <div class="header">
                     <div class="header-welcome">
-                        <img src="../assets/images/catalogue.png" alt="" style="height:13px;width:17px;margin:0 20px 0 35px">
+                        <img @click="menuShowFu()" src="../assets/images/catalogue.png" alt="" style="height:13px;width:17px;margin:0 20px 0 35px">
                         欢迎来到后台管理中心！
                     </div>
                     <div class="header-manage">
@@ -210,14 +232,9 @@
             return{
                 timer: "",//定义一个定时器的变量
                 currentTime: new Date(), // 获取当前时间
-                role:''
+                role:'',
+                isCollapse: true
             }
-        },
-        filters: {
-
-        },
-        watch: {
-
         },
         created() {
                 var vm = this;
@@ -233,6 +250,20 @@
                 this.gethomeRole();
         },
         methods: {
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            menuShowFu(){
+                this.isCollapse = !this.isCollapse
+            },
+
+
+
+
+
             // 通过localstore获取用户的角色
             gethomeRole(){
                 var homeRole = window.localStorage.getItem('homeRole')
@@ -276,6 +307,10 @@
 </script>
 
 <style>
+   
+
+
+
     .el-submenu__title i {
         color: #fff !important;
     }
@@ -340,7 +375,7 @@
         margin-left: -37px;
     }
     .navigate{
-        width: 252px;
+        width: 272px;
         height: 100%;
         background: -webkit-linear-gradient(#25C7FF, #3289CE 80%); /* Safari 5.1 - 6.0 */
         background: -o-linear-gradient(#25C7FF, #3289CE 80%); /* Opera 11.1 - 12.0 */

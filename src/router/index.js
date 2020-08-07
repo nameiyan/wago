@@ -22,7 +22,7 @@ const router = new Router({
             name: 'Home',
             component: resolve => require(['@/pages/Home'], resolve),
             //项目已通过审核列表
-            redirect: {name: 'Article'},
+            redirect: {name: 'sellingCard'},
             meta: {
                 requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
              },
@@ -144,15 +144,7 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
-                // 用户管理   userMessage
-                {
-                    path: '/home/userMessage/userMessage',
-                    name: 'userMessage',
-                    component: resolve => require(['@/pages/userMessage/userMessage'], resolve),
-                    meta: {
-                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-                     }
-                },
+                
 
                 // 订单管理
                 {
@@ -186,6 +178,15 @@ const router = new Router({
                     path: '/home/manager/manager',
                     name: 'manager',
                     component: resolve => require(['@/pages/manager/manager'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
+                // 用户管理   userMessage
+                {
+                    path: '/home/manager/userMessage',
+                    name: 'userMessage',
+                    component: resolve => require(['@/pages/manager/userMessage'], resolve),
                     meta: {
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
@@ -235,6 +236,24 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
+                // 新品反馈
+                {
+                    path: '/home/MessageManage/productFeedback',
+                    name: 'productFeedback',
+                    component: resolve => require(['@/pages/MessageManage/productFeedback'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
+                // 扫码评价管理   scanCode
+                {
+                    path: '/home/MessageManage/scanCode',
+                    name: 'scanCode',
+                    component: resolve => require(['@/pages/MessageManage/scanCode'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                    }
+                },
                 // 添加留言AddMessage
                 {
                     path: '/home/AddMessage',
@@ -244,6 +263,17 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                      }
                 },
+                 // 新品申请管理   productApplication
+                 {
+                    path: '/home/productApplication',
+                    name: 'productApplication',
+                    component: resolve => require(['@/pages/productApplication/productApplication'], resolve),
+                    meta: {
+                        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                     }
+                },
+                
+                
                 // 积分管理     pointManagement
                 {
                     path: '/home/pointManagement',
@@ -253,7 +283,7 @@ const router = new Router({
                         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
                     }
                 },
-               
+                
             ]
         }
     ]
@@ -269,8 +299,8 @@ const router = new Router({
 
 //         if(!mytoken && !localStorage){
 //             next({
-//             path: '/login',
-//             query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+//                 path: '/login',
+//                 query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
 //             })
 //         }else{
 //             next();

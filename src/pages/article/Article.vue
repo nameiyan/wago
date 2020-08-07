@@ -15,18 +15,34 @@
         </div>
         <div class="manege-content">
             <div class="search" >
-               <div>
-                   <el-input style="height:50px;width:180px;margin:20px"
-                        placeholder="请输入文章名称"
-                        v-model=" unclearSearch"
-                        clearable>
-                    </el-input>
-                    <el-button type="primary" plain @click="requireArticle()">查询</el-button>
+               <div class="search_left">
+                    <div>
+                        <el-input style="height:50px;width:180px;margin:20px"
+                                placeholder="请输入文章名称"
+                                v-model=" unclearSearch"
+                                clearable>
+                            </el-input>
+                            <el-button type="primary" plain @click="requireArticle()">查询</el-button>
+                    </div>
+                    <div class="selectbox">
+                            <el-select v-model="value" 
+                                @change="changeType" 
+                                placeholder="请选择文章类型"
+                                clearable>
+                                <el-option 
+                                    v-for="item in options"
+                                    :key="item.typeid"
+                                    :label="item.typeName"
+                                    :value="item.typeid">
+                                </el-option>
+                            </el-select>
+                    </div>
                </div>
                <div>
                    <el-button type="primary" plain @click="addArticle()" class="toadd">添加文章</el-button>
                    <!-- <el-button type="primary" plain @click="addVideo()" class="toadd">添加视频</el-button> -->
                 </div>
+
             </div>
 
             <el-table
@@ -68,9 +84,15 @@
                     label="权重"
                     align="center">
                 </el-table-column>
+                
+                <el-table-column
+                    prop="mytype"
+                    label="类型"
+                    align="center">
+                </el-table-column>
 
                 <el-table-column
-                    prop="createTime"
+                    prop="createTime_transfer"
                     label="时间"
                     align="center">
 
@@ -127,14 +149,44 @@ import CheckArticle from './CheckArticle.vue'
                 total:null,
                 articletable:[],   //查看文章的数据
                 checkarticlevisible:false,
-                unclearSearch:''   //模糊查询
+                unclearSearch:'',   //模糊查询
+                options: [],   //用电安全的全部类型
+                value: ''
             }
         },
         created(){
             // this.adminName = sessionStorage.getItem('admin_name')
             this.requireArticle()
         },
+        mounted(){
+            // 查询用电安全文章的全部类型
+            this.getArticletype()
+        },
         methods: {
+            // 当文章类型的select发生变化时触发
+            changeType(value){
+                this.requireArticle(value)
+            },
+            // 查询用电安全文章的全部类型
+            getArticletype(){
+                var that = this;
+                var param = {
+                    page:1,
+                    size:100
+                };
+                this.$axios({
+                   url:'/type/select',
+                   data:param,
+                   method:'post'
+                }).then(function (res) {
+                    if(res.data.flag){
+                        that.options = res.data.data.list
+                    }
+                })
+                .catch(function (error) {
+
+                 });
+            },
             // 添加视频
             addVideo(){
                 this.$router.push({name: 'uploadVideo'});
@@ -144,13 +196,13 @@ import CheckArticle from './CheckArticle.vue'
                 this.$router.push({name: 'AddArticle'});
             },
             //  查询用电安全的数据(文章列表)
-            requireArticle(){
+            requireArticle(typeid){
                 var that = this;
                 var param = {
                     page:that.nowpage,
                     size:that.nowpageSize,
                     string: that.unclearSearch,
-                    typeid:''
+                    typeid:typeid
                 };
 
                 // .post('/safety/findPage',param)
@@ -165,13 +217,37 @@ import CheckArticle from './CheckArticle.vue'
                     if(res.data.total < 1){
                         that.$message.error('暂无数据！')
                     }
-                    
+                    var mydata = that.tableData
+                    mydata.forEach(function(item,index){
+                        item.createTime_transfer = that.createGoodsTime(item.createTime)
+                        item.mytype = that.transfertype(item.typeid)    //通过类型id查对应的文字
+                  
+                    })
                 })
                 .catch(function (error) {
 
                  });
              },
-           
+            // 文章的typeid转换成文字
+            transfertype(typeid){
+                var label = ''
+                this.options.forEach(function(item, index) {
+                   if(item.typeid == typeid){
+                       label = item.typeName
+                   }
+                })
+                return label
+            },
+            // 时间的格式转换
+            createGoodsTime(value) {
+                // console.log('value',value)
+                var date = new Date(value);
+                var Y = date.getFullYear() + "-";
+                var M = (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1) + "-";
+                var D = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                var time = Y + M + D;
+                return time;
+            },
             
             
             // 查看文章的弹框展示
@@ -306,5 +382,12 @@ import CheckArticle from './CheckArticle.vue'
         height: 40px;
         width: 120px;
         margin: 20px 40px 0 0;
+    }
+    .search_left{
+        display: flex;
+        justify-content: flex-start;
+    }
+    .selectbox{
+        margin: 20px 0 0 40px;
     }
 </style>

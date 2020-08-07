@@ -114,13 +114,13 @@
                   >
         </el-table-column>
 
-        <!-- 描述 -->
+        <!-- 描述
         <el-table-column 
                     prop="miaoshu" 
                     label="描述" 
                     align="center"
                   >
-        </el-table-column>
+        </el-table-column> -->
 
         <!-- 时间 -->
         <el-table-column
@@ -265,7 +265,7 @@ export default {
   mounted() {
     this.goodsMessage();
   },
-   watch:{
+  watch:{
      $route (to, from) {
       this.$router.go(0)
     }
@@ -277,8 +277,6 @@ export default {
     },
     // 上架的按钮   进行下架的操作
     sellOff(index, row){
-      console.log('index',index)
-      console.log('row',row.productid)
       var that = this
       this.$confirm('此操作将下架此商品, 是否继续?', '提示', {
                 confirmButtonText: '确定',
