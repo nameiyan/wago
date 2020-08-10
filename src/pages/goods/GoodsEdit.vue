@@ -841,7 +841,7 @@ Quill.register(Font, true);
                         setTimeout(function(){
                             that.closeTable();
                             // that.$router.push({name: 'GoodsManage' });
-                            parent.location.reload()
+                            // parent.location.reload()
                         },500)
                         
                       
