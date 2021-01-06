@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "ali-oss": "^4.16.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "element-ui": "^2.6.1",
     "file-saver": "^2.0.1",
     "moment": "^2.25.3",
